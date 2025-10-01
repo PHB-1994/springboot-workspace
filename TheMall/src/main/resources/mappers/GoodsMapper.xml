@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.thejoeun.TheMall.mapper.GoodsMapper">
+
+    <!-- ResultMap 정의 -->
+
+    <resultMap id="goodsResultMap" type="com.thejoeun.TheMall.model.Goods">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="price" column="price"/>
+        <result property="stock" column="stock"/>
+    </resultMap>
+
+    <!-- 모든 상품 조회 -->
+
+    <select id="getAllGoods" resultMap="goodsResultMap">
+        SELECT id, name, price, stock
+        FROM goods
+        ORDER BY id DESC
+    </select>
+
+    <!-- ID로 상품 조회 -->
+
+    <select id="getGoodsById" parameterType="int" resultMap="goodsResultMap">
+        SELECT id, name, price, stock
+        FROM goods
+        WHERE id = #{id}
+    </select>
+
+</mapper>
