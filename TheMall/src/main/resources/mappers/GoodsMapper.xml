@@ -33,4 +33,9 @@
         WHERE id = #{id}
     </select>
 
+    <insert id="insertGoods" parameterType="com.thejoeun.TheMall.model.Goods">
+        INSERT INTO goods(name, price, stock)
+        VALUES (#{name}, #{price}, #{stock})
+    </insert>
+
 </mapper>
