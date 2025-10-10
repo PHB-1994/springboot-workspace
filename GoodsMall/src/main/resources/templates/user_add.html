@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상품 등록</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>사용자 등록 - The Mall</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -11,10 +11,6 @@
             margin: 0;
             padding: 20px;
             color: #333;
-        }
-
-        * {
-            box-sizing: border-box;
         }
 
         .container {
@@ -96,7 +92,7 @@
         }
 
         input[type="text"],
-        input[type="number"] {
+        input[type="email"] {
             width: 100%;
             padding: 12px;
             border: 1px solid #ccc;
@@ -106,16 +102,10 @@
         }
 
         input[type="text"]:focus,
-        input[type="number"]:focus {
+        input[type="email"]:focus {
             outline: none;
             border-color: #3498db;
             box-shadow: 0 0 5px rgba(52, 152, 219, 0.2);
-        }
-
-        .input-hint {
-            font-size: 0.85em;
-            color: #95a5a6;
-            margin-top: 5px;
         }
 
         .button-group {
@@ -145,7 +135,6 @@
             color: #34495e;
             border: 1px solid #bdc3c7;
         }
-
         .btn-list:hover {
             background-color: #dbe0e2;
         }
@@ -154,11 +143,9 @@
             background-color: #3498db;
             color: white;
         }
-
         .btn-submit:hover {
             background-color: #2980b9;
         }
-
         .btn-submit:disabled {
             background-color: #a9cce3;
             cursor: not-allowed;
@@ -168,7 +155,6 @@
             background-color: #e74c3c;
             color: white;
         }
-
         .btn-reset:hover {
             background-color: #c0392b;
         }
@@ -178,132 +164,84 @@
 <div class="container">
     <header>
         <h1>The Mall</h1>
-        <p class="subtitle">상품 등록</p>
+        <p class="subtitle">사용자 등록</p>
     </header>
 
     <div class="nav-buttons">
-        <button class="btn-list" onclick="goToList()">📋 상품 목록 보기</button>
+        <button class="btn-list" onclick="goToList()">📋 사용자 목록 보기</button>
     </div>
 
     <div id="alertBox"></div>
 
     <div class="form-container">
-        <form id="goodsForm" onsubmit="submitGoods(event)">
+        <form id="userForm" onsubmit="submitUser(event)">
             <div class="form-group">
-                <label for="name">
-                    상품명<span class="required">*</span>
-                </label>
-                <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        placeholder="상품명을 입력하세요"
-                        required
-                >
+                <label for="name">이름<span class="required">*</span></label>
+                <input type="text" id="name" name="name" placeholder="이름을 입력하세요" required />
             </div>
-
             <div class="form-group">
-                <label for="price">
-                    가격<span class="required">*</span>
-                </label>
-                <input
-                        type="number"
-                        id="price"
-                        name="price"
-                        placeholder="가격을 입력하세요"
-                        min="0"
-                        required
-                >
-                <div class="input-hint">숫자만 입력 가능합니다 (원 단위)</div>
+                <label for="email">이메일<span class="required">*</span></label>
+                <input type="email" id="email" name="email" placeholder="이메일 주소를 입력하세요" required />
             </div>
-
-            <div class="form-group">
-                <label for="stock">
-                    재고<span class="required">*</span>
-                </label>
-                <input
-                        type="number"
-                        id="stock"
-                        name="stock"
-                        placeholder="재고 수량을 입력하세요"
-                        min="0"
-                        value="0"
-                        required
-                >
-                <div class="input-hint">초기 재고 수량을 입력하세요</div>
-            </div>
-
             <div class="button-group">
-                <button type="submit" class="btn-submit">
-                    등록하기
-                </button>
-                <button type="reset" class="btn-reset">
-                    초기화
-                </button>
+                <button type="submit" class="btn-submit">등록하기</button>
+                <button type="reset" class="btn-reset">초기화</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
-    function submitGoods(event) {
+    function submitUser(event) {
         event.preventDefault();
 
         const name = document.getElementById('name').value.trim();
-        const price = parseInt(document.getElementById('price').value);
-        const stock = parseInt(document.getElementById('stock').value);
+        const email = document.getElementById('email').value.trim();
 
-        if (!name) {
-            showAlert('error', '상품명을 입력해주세요.');
+        if (!name || !email) {
+            showAlert('error', '이름과 이메일을 모두 입력해주세요.');
             return;
         }
 
-        if (price < 0) {
-            showAlert('error', '가격은 0 이상이어야 합니다.');
-            return;
-        }
-
-        if (stock < 0) {
-            showAlert('error', '재고는 0 이상이어야 합니다.');
-            return;
-        }
-
-        const goodsData = {
+        const userData = {
             name: name,
-            price: price,
-            stock: stock
+            email: email,
         };
 
         const submitBtn = event.target.querySelector('.btn-submit');
         submitBtn.disabled = true;
         submitBtn.textContent = '등록 중...';
 
-        fetch('http://localhost:8080/api/goods', {
+        fetch('http://localhost:8080/api/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(goodsData)
+            body: JSON.stringify(userData),
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('서버 응답 오류: ' + response.status);
+                    return response.json().then(err => {
+                        throw new Error(err.message || '서버 응답 오류: ' + response.status)
+                    }).catch(() => {
+                        throw new Error('서버 응답 오류: ' + response.status)
+                    });
                 }
-                return response.text();
+                return response.json();
             })
             .then(data => {
-                showAlert('success', '상품이 성공적으로 등록되었습니다!');
-                document.getElementById('goodsForm').reset();
+                showAlert('success', '사용자가 성공적으로 등록되었습니다!');
+                document.getElementById('userForm').reset();
 
                 setTimeout(() => {
-                    if (confirm('상품 목록을 확인하시겠습니까?')) {
+                    if (confirm('사용자 목록을 확인하시겠습니까?')) {
                         goToList();
                     }
                 }, 1500);
             })
             .catch(error => {
                 console.error('Error:', error);
-                showAlert('error', '상품 등록에 실패했습니다: ' + error.message);
+                showAlert('error', '사용자 등록에 실패했습니다: ' + error.message);
             })
             .finally(() => {
                 submitBtn.disabled = false;
@@ -327,27 +265,12 @@
             alertBox.innerHTML = '';
         }, 5000);
 
-
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function goToList() {
-        window.location.href = '/goodList';
+        window.location.href = '/userList';
     }
-
-    document.getElementById('goodsForm').addEventListener('reset', function(e) {
-        if (!confirm('입력한 내용을 모두 지우시겠습니까?')) {
-            e.preventDefault();
-        }
-    });
-
-    document.querySelectorAll('input[type="number"]').forEach(input => {
-        input.addEventListener('keypress', function(e) {
-            if (e.key === '-' || e.key === '+' || e.key === 'e') {
-                e.preventDefault();
-            }
-        });
-    });
 </script>
 </body>
 </html>

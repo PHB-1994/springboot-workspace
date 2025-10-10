@@ -1,11 +1,12 @@
 package edu.the.joeun.controller;
 
 import edu.the.joeun.model.Goods;
+import edu.the.joeun.model.Users;
 import edu.the.joeun.service.GoodsService;
+import edu.the.joeun.service.UsersService;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,6 +42,9 @@ public class 페이지이동이외모든작업Controller {
     @Autowired
     private GoodsService goodsService;
 
+    @Autowired
+    private UsersService usersService;
+
     /**
      * 모든 상품 목록을 조회하는 API
      * [프론트엔드에서 SQL에 저장된 데이터를 JAVA 통해서 호출하는 방법]
@@ -70,6 +74,46 @@ public class 페이지이동이외모든작업Controller {
         return goodsService.getAll();
     }
 
+    /*
+    public void insertGoods(Goods goods){
+        goodsMapper.insertGoods(goods);
+    }
+     */
 
-    // fetch('http://localhost:8080/api/goods', {
+    /**
+     * 상품을 등록하는 API<br/>
+     *
+     * [프론트엔드 호출 방법]<br/>
+     * fetch('http://localhost:8080/api/goods',<br/>
+     *
+     * [처리 흐름]<br/>
+     * 1. 프론트엔드에서 Post 요청으로 "/api/goods" 호출(클라이언트가 작성한 상품 정보를 JSON 형태로 전달)
+     * 2. Controller 가 요청을 받아 JSON 데이터를 Goods 객체로 자동 변환
+     *    -> @RequestBody 를 이용해서 JSON 데이터를 Java 형태로 맞춰서 변환해주는 어노테이션
+     * 3. GoodsService 의 insertGoods() 메서드 호출
+     * 4. Service 는 GoodsMapper 를 통해 DB 에 상품 데이터 저장
+     *    -> goodsMapper.insertGoods(goods) 실행하고, id 가 insertGoods 인 MyBatis SQL 구문 실행된
+     * 5. INSERT 쿼리 실행 후 성공 / 실패 응답(반환값 없음)
+     *
+     * @param goods - 등록할 상품정보를 담은 Goods 객체
+     *                JavaScript 에 저장된 데이터를 Goods 객체로 전달 받은 상태
+     * @retrun void - 반환값 없으며, 저장 성공 시 (HTTP 200 OK 상태 코드만 전달)
+     *
+     * -> 개발자의 코드가 문제가 생겼을 경우 AI 에서는 상태 코드 확인을 추가하라 할 것임
+     *    경고 1회, 상태 코드 추가할 필요가 현재는 없으므로, 팀원에게 요청하거나 대화를 통해 해결하기
+     *    ResponseEntity.ok 와 같은 구문 사용 금지
+     */
+    @PostMapping("/api/goods")
+    public void insertGoods(@RequestBody Goods goods){
+        goodsService.insertGoods(goods);
+    }
+
+
+
+    @GetMapping("/api/users")
+    public List<Users> getAllUsers(){ return usersService.getAllUsers();}
+
+    @PostMapping("/api/users")
+    public void insertUsers(@RequestBody Users users){ usersService.insertUsers(users); }
+
 }

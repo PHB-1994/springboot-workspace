@@ -46,6 +46,16 @@ public class 페이지이동Controller {
     public String getGoodsAdd(){
         return "goodsAdd";
     }
+
+    @GetMapping("/userList")
+    public String getUsersList(){
+        return "사용자목록";
+    }
+
+    @GetMapping("/usersAdd")
+    public String getUsersAdd(){
+        return "user_add";
+    }
 }
 
 
