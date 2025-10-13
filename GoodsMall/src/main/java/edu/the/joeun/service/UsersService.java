@@ -1,7 +1,7 @@
 package edu.the.joeun.service;
 
 import edu.the.joeun.mapper.UsersMapper;
-import edu.the.joeun.model.Users;
+
 import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +12,12 @@ public class UsersService {
 
     private UsersMapper userMapper;
 
-    public List<Users> getAllUsers(){
+    public List<User> getAllUsers(){
         return userMapper.getAllUser();
     }
 
-    public void insertUsers(Users user){
-        userMapper.insertUsers(user);
+    public void insertUser(User user){
+        userMapper.insertUser(user);
     }
 
 }

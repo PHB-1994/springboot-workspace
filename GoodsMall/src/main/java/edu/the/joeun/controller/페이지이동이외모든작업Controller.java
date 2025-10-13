@@ -1,7 +1,6 @@
 package edu.the.joeun.controller;
 
 import edu.the.joeun.model.Goods;
-import edu.the.joeun.model.Users;
 import edu.the.joeun.service.GoodsService;
 import edu.the.joeun.service.UsersService;
 import org.apache.catalina.User;
@@ -110,10 +109,14 @@ public class 페이지이동이외모든작업Controller {
 
 
 
-    @GetMapping("/api/users")
-    public List<Users> getAllUsers(){ return usersService.getAllUsers();}
-
+    /*
     @PostMapping("/api/users")
-    public void insertUsers(@RequestBody Users users){ usersService.insertUsers(users); }
+    public
+     */
+    @PostMapping("/api/users")
+    public void insertUsers(@RequestBody User user){ usersService.insertUser(user); }
+
+    @GetMapping("/api/users")
+    public List<User> getAllUser(){ return usersService.getAllUsers();}
 
 }

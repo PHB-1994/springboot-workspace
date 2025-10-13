@@ -47,14 +47,14 @@ public class 페이지이동Controller {
         return "goodsAdd";
     }
 
-    @GetMapping("/userList")
+    @GetMapping("/user/list")
     public String getUsersList(){
         return "사용자목록";
     }
 
-    @GetMapping("/usersAdd")
+    @GetMapping("/user/add")
     public String getUsersAdd(){
-        return "user_add";
+        return "사용자등록";
     }
 }
 
