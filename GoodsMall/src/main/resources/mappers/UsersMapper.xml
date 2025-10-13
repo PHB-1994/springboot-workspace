@@ -10,6 +10,7 @@
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="email" column="email"/>
+        <result property="password" column="password"/>
         <result property="role" column="role"/>
         <result property="create_at" column="create_at"/>
         <result property="update_at" column="update_at"/>
@@ -28,10 +29,10 @@
     </select>
 
     <insert id="insertUser" parameterType="edu.the.joeun.model.User">
-        INSERT INTO user(name, email, role)
+        INSERT INTO user(name, email, password, role)
         <!-- id, create_at, update_at 은 SQL 자체에서 데이터 알아서 삽입하므로
          사용자가 작성한 데이터를 기입하지 않는다. -->
-        VALUES(#{name}, #{email}, #{role})
+        VALUES(#{name}, #{email}, #{password}, #{role})
     </insert>
 
 </mapper>

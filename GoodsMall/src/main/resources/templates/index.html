@@ -1,18 +1,29 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>TheMall - 홈</title>
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Mall - 홈</title>
+    <!--
+    프로그램 상 static 과 templates의 구분을 따로 하지 않기 때문에
+    .html 파일과 api 주소를 제외하고는 css 나 js 이미지, 파일 경로를
+    static 중점으로 가져옴
+     -->
+    <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
-    <div>
-        <a href="/goodList">상품목록</a>
-        <a href="/goodsAdd">상품등록</a>
-        <a href="/user/list">사용자목록</a>
-        <a href="/user/add">유저등록</a>
-    </div>
+<div class="container">
+    <header>
+        <h1>The Mall</h1>
+        <p class="subtitle">상품 관리 시스템</p>
+    </header>
 
+    <div class="nav-buttons">
+        <a href="/goodList">상품 목록</a>
+        <a href="/goodsAdd">상품 등록</a>
+        <a href="/user/list">유저 목록</a>
+        <a href="/user/add">유저 등록</a>
+    </div>
+</div>
 </body>
 </html>

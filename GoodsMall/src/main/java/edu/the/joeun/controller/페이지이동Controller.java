@@ -30,8 +30,8 @@ public class 페이지이동Controller {
     }
 
     /**
-     * URL("/goodList")로 접속했을 때 goodsList.html 페이지를 반환
-     * @return templates/goodsList.html 파일의 이름 (확장자는 제외)
+     * URL("/goodList")로 접속했을 때 goodsList.css.css.html 페이지를 반환
+     * @return templates/goodsList.css.css.html 파일의 이름 (확장자는 제외)
      */
     @GetMapping("/goodList")
     public String getGoodsList(){
@@ -39,8 +39,8 @@ public class 페이지이동Controller {
     }
 
     /**
-     * URL("/goodsAdd")로 접속했을 때 goodsAdd.html 페이지를 반환
-     * @return templates/goodsAdd.html 파일의 이름 (확장자는 제외)
+     * URL("/goodsAdd.css")로 접속했을 때 goodsAdd.css.html 페이지를 반환
+     * @return templates/goodsAdd.css.html 파일의 이름 (확장자는 제외)
      */
     @GetMapping("/goodsAdd")
     public String getGoodsAdd(){

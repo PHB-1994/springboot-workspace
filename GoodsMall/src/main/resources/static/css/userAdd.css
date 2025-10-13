@@ -1,0 +1,153 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f4f7f6;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+}
+
+h1 {
+    color: #2c3e50;
+    margin: 0;
+}
+
+.subtitle {
+    color: #7f8c8d;
+    font-size: 1.1em;
+    margin-top: 5px;
+}
+
+.nav-buttons {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+#alertBox {
+    margin-bottom: 20px;
+    min-height: 50px;
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+}
+
+.alert-error {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+}
+
+.alert-icon {
+    margin-right: 10px;
+    font-size: 1.2em;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #34495e;
+}
+
+.required {
+    color: #e74c3c;
+    margin-left: 4px;
+}
+
+input[type="text"],
+input[type="email"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.2);
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+button {
+    flex-grow: 1;
+    padding: 12px 20px;
+    font-size: 1em;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+.btn-list {
+    flex-grow: 0;
+    background-color: #ecf0f1;
+    color: #34495e;
+    border: 1px solid #bdc3c7;
+}
+.btn-list:hover {
+    background-color: #dbe0e2;
+}
+
+.btn-submit {
+    background-color: #3498db;
+    color: white;
+}
+.btn-submit:hover {
+    background-color: #2980b9;
+}
+.btn-submit:disabled {
+    background-color: #a9cce3;
+    cursor: not-allowed;
+}
+
+.btn-reset {
+    background-color: #e74c3c;
+    color: white;
+}
+.btn-reset:hover {
+    background-color: #c0392b;
+}

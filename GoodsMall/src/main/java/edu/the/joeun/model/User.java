@@ -25,6 +25,7 @@ public class User {
 
     private String name;
     private String email;
+    private String password;
     private String role;
     private String create_at; // SQL 에서 가입일자나 유저정보 수정일자를
     private String update_at; // 관리자가 확인하고자 할 때 사용하기 위해 넣어놓은 변수 명칭
