@@ -203,7 +203,33 @@
             </div>
 
             <div class="form-group">
-                <label for="price">
+                <label for="stock">
+                    카테고리<span class="required">*</span>
+                </label>
+                <label>
+                    <input type="radio" name="category" value="전자제품">
+                    전자제품
+                </label>
+                <label>
+                    <input type="radio" name="category" value="생활용품">
+                    생활용품
+                </label>
+                <label>
+                    <input type="radio" name="category" value="패션">
+                    패션
+                </label>
+                <label>
+                    <input type="radio" name="category" value="Accessories">
+                    악세사리
+                </label>
+                <label>
+                    <input type="radio" name="category" value="other">
+                    기타
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>
                     가격<span class="required">*</span>
                 </label>
                 <input
@@ -233,6 +259,8 @@
                 <div class="input-hint">초기 재고 수량을 입력하세요</div>
             </div>
 
+
+
             <div class="button-group">
                 <button type="submit" class="btn-submit">
                     등록하기
@@ -250,11 +278,16 @@
         event.preventDefault();
 
         const name = document.getElementById('name').value.trim();
+        const category = document.querySelector('input[name="category"]:checked').value;
         const price = parseInt(document.getElementById('price').value);
         const stock = parseInt(document.getElementById('stock').value);
 
         if (!name) {
             showAlert('error', '상품명을 입력해주세요.');
+            return;
+        }
+        if (!category) {
+            showAlert('error', '카테고리를 선택해주세요.');
             return;
         }
 
@@ -271,7 +304,8 @@
         const goodsData = {
             name: name,
             price: price,
-            stock: stock
+            stock: stock,
+            category: category,
         };
 
         const submitBtn = event.target.querySelector('.btn-submit');
