@@ -1,9 +1,9 @@
 package edu.the.joeun.controller;
 
 import edu.the.joeun.model.Goods;
+import edu.the.joeun.model.User;
 import edu.the.joeun.service.GoodsService;
-import edu.the.joeun.service.UsersService;
-import org.apache.catalina.User;
+import edu.the.joeun.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +42,7 @@ public class 페이지이동이외모든작업Controller {
     private GoodsService goodsService;
 
     @Autowired
-    private UsersService usersService;
+    private UserService usersService;
 
     /**
      * 모든 상품 목록을 조회하는 API
@@ -128,7 +128,7 @@ public class 페이지이동이외모든작업Controller {
      */
     @GetMapping("/api/users")
     public List<User> getAllUser(){
-        return usersService.getAllUsers();
+        return usersService.getAllUser();
     }
 
 }
