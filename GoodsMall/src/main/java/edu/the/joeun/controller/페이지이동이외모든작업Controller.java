@@ -108,15 +108,27 @@ public class 페이지이동이외모든작업Controller {
     }
 
 
-
-    /*
-    @PostMapping("/api/users")
-    public
+    /**
+     * 유저 정보를 등록하는 API
+     * /api/users -> Post 일 경우 유저를 등록하는 공간으로 유저 등록 진행 시작
+     * @param user = html -> js 로 가져온 유저 정보 데이터를 모두 json 형태로 설정
+     *              @RequestBody 를 이용해서 js 형태 -> json 형태 설정
      */
     @PostMapping("/api/users")
-    public void insertUsers(@RequestBody User user){ usersService.insertUser(user); }
+    public void insertUsers(@RequestBody User user){
+        usersService.insertUser(user);
+    }
 
+    /**
+     * /api/users -> get 일 경우 모든 유저를 조회하는 공간으로 유저 조회 진행 시작
+     * 단순히 js -> html 로 유저 데이터를 SQL 에서 전달하는 것이기 때문에
+     * 매개변수와 파라미터는 빈 값 형태
+     * @return MyBatis 에 작성된 SQL -> mapper 조회 후, service 로 전달해온 데이터를
+     *         js -> html 로 반환하여 클라이언트가 모든 유저 목록을 조회할 수 있도록 설정
+     */
     @GetMapping("/api/users")
-    public List<User> getAllUser(){ return usersService.getAllUsers();}
+    public List<User> getAllUser(){
+        return usersService.getAllUsers();
+    }
 
 }
