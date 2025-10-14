@@ -3,20 +3,22 @@ function submitUser(event) {
 
     const name = document.getElementById('name').value.trim();
     const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
     const role = document.querySelector('input[name="role"]:checked').value.trim();
 
     //  select - option  형태에서 id 값으로 role 확인하여
     // 선택된 권한을 백엔드로 전달
     // const role = document.getElementById('role').value.trim();
 
-    if (!name || !email || !role) {
-        showAlert('error', '이름과 이메일, 사용자 구분을 모두 입력해주세요.');
+    if (!name || !email || !role || !password) {
+        showAlert('error', '이름과 이메일, 비밀번호, 사용자 구분을 모두 입력해주세요.');
         return;
     }
 
     const userData = {
         name: name,
         email: email,
+        password: password,
         role: role,
     };
 
