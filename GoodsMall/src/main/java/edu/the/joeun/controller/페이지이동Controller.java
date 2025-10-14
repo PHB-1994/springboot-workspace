@@ -56,6 +56,12 @@ public class 페이지이동Controller {
     public String getUsersAdd(){
         return "사용자등록";
     }
+
+    @GetMapping("/member/add")
+    public String memberAddPage(){
+        return "memberAdd";
+    }
+
 }
 
 

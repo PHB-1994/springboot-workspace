@@ -1,8 +1,10 @@
 package edu.the.joeun.controller;
 
 import edu.the.joeun.model.Goods;
+import edu.the.joeun.model.Member;
 import edu.the.joeun.model.User;
 import edu.the.joeun.service.GoodsService;
+import edu.the.joeun.service.MemberService;
 import edu.the.joeun.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +46,9 @@ public class 페이지이동이외모든작업Controller {
     @Autowired
     private UserService usersService;
 
+    @Autowired
+    private MemberService memberService;
+
     /**
      * 모든 상품 목록을 조회하는 API
      * [프론트엔드에서 SQL에 저장된 데이터를 JAVA 통해서 호출하는 방법]
@@ -73,11 +78,6 @@ public class 페이지이동이외모든작업Controller {
         return goodsService.getAll();
     }
 
-    /*
-    public void insertGoods(Goods goods){
-        goodsMapper.insertGoods(goods);
-    }
-     */
 
     /**
      * 상품을 등록하는 API<br/>
@@ -129,6 +129,11 @@ public class 페이지이동이외모든작업Controller {
     @GetMapping("/api/users")
     public List<User> getAllUser(){
         return usersService.getAllUser();
+    }
+
+    @PostMapping("/api/member/add")
+    public void insertMember(@RequestBody Member member){
+        memberService.insertMember(member);
     }
 
 }

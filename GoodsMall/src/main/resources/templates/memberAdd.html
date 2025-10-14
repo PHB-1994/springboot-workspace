@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>회원 가입 - The Mall</title>
+    <link rel="stylesheet" href="/css/userAdd.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>The Mall</h1>
+        <p class="subtitle">회원 가입</p>
+    </header>
+
+    <div id="alertBox"></div>
+
+    <div class="form-container">
+        <form id="memberForm" onsubmit="submitMember(event)">
+            <div class="form-group">
+                <label for="name">이름<span class="required">*</span></label>
+                <input type="text" id="name" name="name" placeholder="이름을 입력하세요" required />
+            </div>
+            <div class="form-group">
+                <label for="email">이메일<span class="required">*</span></label>
+                <input type="email" id="email" name="email" placeholder="이메일 주소를 입력하세요" required />
+            </div>
+            <div class="form-group">
+                <label for="password">비밀번호<span class="required">*</span></label>
+                <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required />
+            </div>
+            <div class="form-group">
+                <label>회원 권한<span class="required">*</span></label>
+                <label>
+                    <input type="radio" name="role" value="USER" required checked>
+                    일반 회원
+                </label>
+                <label>
+                    <input type="radio" name="role" value="ADMIN" required>
+                    관리자
+                </label>
+            </div>
+            <div class="button-group">
+                <button type="submit" class="btn-submit">가입하기</button>
+                <button type="reset" class="btn-reset">다시작성</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/js/memberAdd.js"></script>
+
+</body>
+</html>
