@@ -35,4 +35,10 @@
         VALUES(#{name}, #{email}, #{password}, #{role})
     </insert>
 
+    <!-- 이메일로 사용자 조회 (로그인용도) -->
+    <select id="getUserByEmail" parameterType="String" resultMap="usersMap">
+        SELECT *
+        FROM user
+        WHERE email = #{email}
+    </select>
 </mapper>

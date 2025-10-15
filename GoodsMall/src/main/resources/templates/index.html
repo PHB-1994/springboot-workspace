@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,6 +17,10 @@
         <h1>The Mall</h1>
         <p class="subtitle">상품 관리 시스템</p>
     </header>
+    <!-- 로그인 된 사용자에게만 보이는 환영 메세지 -->
+    <div th:if="${session.loginUser}">
+        <h2 th:text="${session.loginUser.name} + '님, 환영합니다!'"></h2>
+    </div>
 
     <div class="nav-buttons">
         <a href="/goodList">상품 목록</a>

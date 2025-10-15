@@ -49,4 +49,20 @@ public class SessionUtil {
     public static boolean isLoginUser(HttpSession session){
         return session.getAttribute(LOGIN_USER) != null;
     }
+
+    /**
+     * 관리자 여부 확인
+     */
+    public static boolean isAdmin(HttpSession session){
+        User user = getLoginUser(session);
+        return user != null && "ADMIN".equals(user.getRole());
+    }
+
+    /**
+     * 전체 세션 무효화(로그아웃)
+     */
+    public static void invalidate(HttpSession session){
+        session.invalidate();
+    }
+
 }
