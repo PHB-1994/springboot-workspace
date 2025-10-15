@@ -46,8 +46,6 @@ public class 페이지이동이외모든작업Controller {
     @Autowired
     private UserService usersService;
 
-    @Autowired
-    private MemberService memberService;
 
     /**
      * 모든 상품 목록을 조회하는 API
@@ -129,11 +127,6 @@ public class 페이지이동이외모든작업Controller {
     @GetMapping("/api/users")
     public List<User> getAllUser(){
         return usersService.getAllUser();
-    }
-
-    @PostMapping("/api/member/add")
-    public void insertMember(@RequestBody Member member){
-        memberService.insertMember(member);
     }
 
 }

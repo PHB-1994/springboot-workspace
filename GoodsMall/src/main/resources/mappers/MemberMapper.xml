@@ -3,9 +3,20 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+<!--
+mapper = 매핑 모든 sql 을 매핑(감싸서)해서 ___Mapper.java
+파일로 sql 문을 전달하겠다 형태
+ -->
 <mapper namespace="edu.the.joeun.mapper.MemberMapper">
 
+    <!--
+    sql 컬럼명칭과 java 컬럼명칭이 서로 어떻게 일치하는지 일치 결과를 작성
+    resultMap id 값으로 일치 결과를 select 나 insert update delete 에서 참조하여
+    사용할 수 있다.
+    DBConfig 를 설정해주는 순간 resultMap 은 작성하지 않을 예징이다.
+    SQL 에서는 컬럼을 _ 형태로 단어구분을 한다.
+    JAVA 에서는 변수명칭을 카멜케이스 형태로 단어 구분을 한다.
+    -->
     <resultMap id="memberMap" type="edu.the.joeun.model.Member">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
@@ -14,9 +25,25 @@
         <result property="role" column="role"/>
         <result property="create_at" column="create_at"/>
         <result property="update_at" column="update_at"/>
+        <!--
+        자바 언어의 문법적 특성상 관습으로
+        자바는 여러 단어를 이어서 작성할 때 첫 글자는 소문자로 작성하고,
+        그 이후 각 단어의 첫 글자는 대문자로 작성하는 방식을 주로 사용
+
+        SQL 언어의 문법적 특성상 관습으로
+        대소문자 구분이 없음. 카멜케이스 형태가 그렇게 의미있지는 않아
+        SQL 에서 카멜케이스를 사용해도 무용지물
+        member = memMber = MEMBER = 대소문자 구분 없이 모두 똑같은 테이블이나
+        컬럼을 바라보는 단어로 인식
+        maver_shopping_user_id 형태로 구분지어서 사용 많이한다.
+
+        자바 변수 명칭을 추후에는 카멜케이스 형태로 작성하게 될 것
+        <result property="createAt" column="create_at"/>
+        <result property="updateAt" column="update_at"/>
+        -->
     </resultMap>
 
-    <insert id="insertMember" parameterType="edu.the.joeun.model.Member">
+    <insert id="saveMember" parameterType="edu.the.joeun.model.Member">
         INSERT INTO member(name, email, password, role)
         VALUES(#{name}, #{email}, #{password}, #{role})
     </insert>
