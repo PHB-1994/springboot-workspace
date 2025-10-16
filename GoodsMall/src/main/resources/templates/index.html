@@ -21,6 +21,10 @@
     <div th:if="${session.loginUser}">
         <h2 th:text="${session.loginUser.name} + '님, 환영합니다!'"></h2>
     </div>
+    <!-- 로그인 하지 않은 경우 -->
+    <div th:unless="${session.loginUser}">
+        <a href="/login">로그인</a>
+    </div>
 
     <div class="nav-buttons">
         <a href="/goodList">상품 목록</a>
