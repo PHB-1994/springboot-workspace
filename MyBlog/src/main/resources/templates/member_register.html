@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>My Blog - 회원가입</title>
+
+</head>
+<body>
+    <div th:replace="~{header :: header}"></div>
+
+    <!-- JavaScript 로 function 을 연동할 때 사용하는 방법
+    th 타임리프 문법이냐 아니냐 차이일 뿐! th: 안써도 됨
+    <form id="userForm" th:onsubmit="submitMember(event)">
+    <form id="userForm" onsubmit="submitMember(event)">
+    -->
+    <!--
+    Content-Type 'application/x-www-form-urlencoded;charset=UTF-8' is not supported
+
+    <form action="/api/member/register" method="post">
+
+    @PostMapping 컨트롤러에서
+    public void saveMember(
+                        @RequestParam String memberName,
+                        @RequestParam String memberEmail,
+                        @RequestParam String memberPassword
+                        ) {
+    값을 하나 씩 가져오겠다. 설정하거나
+    @PostMapping 컨트롤러에서
+    public void saveMember(@ModelAttribute Member member) {
+
+    }
+    기본적으로 application/x-www-form-urlencoded;charset=UTF-8
+    형식인     @ModelAttribute 로 DB 에 넣을 데이터 가져오기
+    -->
+    <form action="/api/member/register" method="post">
+        <label>
+            이름 : <input id="memberName" name="memberName" placeholder="이름을 입력하세요.">
+        </label>
+        <br/>
+        <label>
+            이메일 : <input id="memberEmail" name="memberEmail" placeholder="이메일을 입력하세요.">
+        </label>
+        <br/>
+        <label>
+            비밀번호 : <input id="memberPassword" name="memberPassword" placeholder="비밀번호를 입력하세요.">
+        </label>
+        <br/>
+        <label>사용자 권한</label>
+        <label>
+            <input type="radio" name="memberRole" th:value="USER">일반 사용자
+        </label>
+        <label>
+            <input type="radio" name="memberRole" th:value="ADMIN">관리자
+        </label>
+        <br/>
+        <button type="submit">등록하기</button>
+        <button type="reset">초기화</button>
+    </form>
+</body>
+</html>

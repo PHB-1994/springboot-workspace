@@ -14,5 +14,5 @@ public interface MemberMapper {
     Member getMemberByEmail(String memberEmail);
     Member getMemberById(String memberId);
     List<Member> selectMemberList();
-
+    void saveMember(Member member);
 }

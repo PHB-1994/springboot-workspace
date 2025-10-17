@@ -17,4 +17,9 @@ public class MemberController {
     public String getMemberPage(){
         return "member";
     }
+
+    @GetMapping("/member/register")
+    public String getMemberRegisterPage() {
+        return "member_register";
+    }
 }

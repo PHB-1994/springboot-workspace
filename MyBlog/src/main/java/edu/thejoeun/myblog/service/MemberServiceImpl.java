@@ -49,4 +49,9 @@ public class MemberServiceImpl implements MemberService {
     public Member getMemberById(String memberId) {
         return null;
     }
+
+    @Override
+    public void saveMember(Member member) {
+        memberMapper.saveMember(member);
+    }
 }

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div th:fragment="header">
+    <style>
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-name {
+            font-weight: 600;
+            color: #333;
+        }
+        .user-role {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .user-role.admin {
+            background: #e74c3c;
+        }
+        .btn-logout {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-logout:hover {
+            background: #c0392b;
+        }
+    </style>
+
+    <div th:if="${session.loginUser}" class="user-info">
+        <span class="user-name" th:text="${session.loginUser.name}"></span>
+        <span class="user-role"
+              th:classappend="${session.loginUser.role == 'ADMIN'} ? 'admin' : ''"
+              th:text="${session.loginUser.role == 'ADMIN'} ? '관리자' : '일반회원'">
+        </span>
+        <form action="/logout" method="post" style="margin: 0;">
+            <button type="submit" class="btn-logout">로그아웃</button>
+        </form>
+    </div>
+
+    <div th:unless="${session.loginUser}" class="user-info">
+        <a href="/login" style="color: #667eea; text-decoration: none; font-weight: 600;">로그인</a>
+    </div>
+</div>
+</body>
+</html>

@@ -14,4 +14,5 @@ public interface MemberService {
     List<Member> selectMemberList();
     String login(String memberEmail, String memberPassword, HttpSession session, Model model);
     Member getMemberById(String memberId);
+    void saveMember(Member member);
 }
