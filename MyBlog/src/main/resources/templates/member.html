@@ -7,7 +7,38 @@
 
 </head>
 <body>
+<!-- 자바스크립트 형태를 많이 활용하자!!!!! -->
 <div th:replace="~{header :: header}"></div>
+<!--
+================ 해당 방식은 지양 =====================
+    @GetMapping("/member/list")
+    public String getMemberPage(Model model){
+        List<Member> members = memberService.selectMemberList();
+        model.addAttribute("members",members);
+        return "member";
+    }
+
+    <tr th:each="member : ${members}">
+        <td th:text="${member.memberName}"></td>
+    </tr>
+
+    백엔드 -> 프론트엔드까지 모두 한 번에 진행하는 풀스택 기준 작업
+    백엔드부터 프론트엔드까지 모두 연결되어 있어서
+    백엔드 로직을 제대로 작성했는지 확인 불가
+    th 문법은 1. header 와 같은 동일한 코드를 하나의
+                 html 에서 작성 후 import 형태로 동일한 형식의 html 을 가져올 때 만 사용
+              2. session 유저 정보 데이터를 가져올 때 만 사용
+
+    ※되도록이면 fetch 형태의 js 로직을 작성
+-->
+<tr th:each="member : ${members}">
+    <a
+            th:href=""
+
+            th:text="${member.memberName}">
+
+    </a>
+</tr>
 
 </body>
 </html>

@@ -46,8 +46,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member getMemberById(String memberId) {
-        return null;
+    public Member getMemberById(int memberId) {
+        return memberMapper.getMemberById(memberId);
     }
 
     @Override

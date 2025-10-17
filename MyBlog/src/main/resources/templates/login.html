@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title></title>
+
+</head>
+<body>
+<!--
+session 에서 로그인 유무를 전달할 때 로그인 실패하면
+model 에는 error = "에러메세지" 내용이 백엔드에서 담길 것이고
+그대로 프론트엔드에 보여질 공간
+에러가 없는 경우 안보이는 공간
+-->
+<div th:if="${error}" th:text="${error}"></div>
+<!-- JS 형태로 작성하기 -->
+<form action="/login" method="post">
+    <label>
+        이메일 :
+        <input id="memberEmail" name="memberEmail" placeholder="Email Enter">
+    </label>
+    <br/>
+    <label>
+        비밀번호 :
+        <input id="memberPassword" name="memberPassword" placeholder="PW Enter">
+    </label>
+    <br/>
+    <button>로그인</button>
+</form>
+</body>
+</html>

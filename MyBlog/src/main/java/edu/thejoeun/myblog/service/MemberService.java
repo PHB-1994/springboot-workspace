@@ -13,6 +13,6 @@ public interface MemberService {
      */
     List<Member> selectMemberList();
     String login(String memberEmail, String memberPassword, HttpSession session, Model model);
-    Member getMemberById(String memberId);
+    Member getMemberById(int memberId);
     void saveMember(Member member);
 }

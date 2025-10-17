@@ -12,7 +12,7 @@ public interface MemberMapper {
      * 로그인을 위한 email 실행
      */
     Member getMemberByEmail(String memberEmail);
-    Member getMemberById(String memberId);
+    Member getMemberById(int memberId);
     List<Member> selectMemberList();
     void saveMember(Member member);
 }
