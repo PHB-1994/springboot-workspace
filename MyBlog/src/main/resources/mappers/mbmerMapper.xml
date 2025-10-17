@@ -4,23 +4,27 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="edu.thejoeun.myblog.mapper">
-    <select id="getMemberByEmail" resultMap="Member">
+<mapper namespace="edu.thejoeun.myblog.mapper.MemberMapper">
+    <!--
+    resultType
+    resultMap
+    -->
+    <select id="getMemberByEmail" resultType="Member">
         SELECT *
         FROM member
         WHERE Member_email = ${memberEmail}
     </select>
 
-    <select id="selectMemberList" resultType="Member">
-        SELECT *
-        FROM member
-        ORDER BY MEMBER_NO
-    </select>
-
-    <select id="getMemberById" resultMap="Member">
+    <select id="getMemberById" resultType="Member">
         SELECT *
         FROM member
         WHERE Member_id = ${memberId}
+    </select>
+
+    <select id="selectMemberList" resultType="Member">
+        SELECT *
+        FROM member
+        ORDER BY MEMBER_id
     </select>
 
 </mapper>

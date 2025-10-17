@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -35,13 +36,33 @@ public class DBConfig {
     @Autowired
     private ApplicationContext applicationContext; // 현재 프로젝트 파일 내용 모두 참고
 
+    @Value("${spring.datasource.url}") // properties 에 작성한 속성 명칭 읽을 때 사용
+    private String jdbcUrl;
+
+    @Value("${spring.datasource.username}")
+    private String username;
+
+    @Value("${spring.datasource.password}")
+    private String password;
+
+    @Value("${spring.datasource.driver-class-name}")
+    private String driverClassName;
+
     // HIKARICP 설정 //
+
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.hikari")
+    @ConfigurationProperties(prefix = "spring.datasource")
     public HikariConfig hikariConfig() {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(jdbcUrl);
+        config.setUsername(username);
+        config.setPassword(password);
+        config.setDriverClassName(driverClassName);
+
         // src/main/resources/config.properties 파일에서 읽어온
         // spring.datasource.hikari 로 시작하는 모든 값을 이 설정 안에서 사용하겠다.
-        return new HikariConfig();
+        // return new HikariConfig();
+        return config;
     }
 
     @Bean
@@ -60,7 +81,7 @@ public class DBConfig {
         // sessionFactory.setMapperLocations(현재 프로젝트에서(어디에 위치한 mapper.xml 파일인지 위치 설정));
 
         sessionFactory.setMapperLocations(
-                applicationContext.getResources("classpath*:mapper/*.xml")
+                applicationContext.getResources("classpath:/mappers/**/*.xml")
         );
 
         // application.properties 에 작성한 model - mapper 를 연결해주는 속성 설정을
@@ -74,7 +95,7 @@ public class DBConfig {
 
         // mybatis 설정 파일 경로 지정
         sessionFactory.setConfigLocation(
-                applicationContext.getResource("classpath:mybatis-config.xml")
+                applicationContext.getResource("classpath:/mybatis-config.xml")
         );
 
         // 설정된 내용이 모두 적용된 상태로 객체 반환
