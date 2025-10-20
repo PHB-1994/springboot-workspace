@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <!DOCTYPE configuration
-        PUBLIC "-//mybatis.org//DTD config 3.0//EN"
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
@@ -11,3 +11,8 @@
     </settings>
 
 </configuration>
+
+
+<!--
+package 에서 특정 폴더를 지정해서 설정하지 않음
+-->

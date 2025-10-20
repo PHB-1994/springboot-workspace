@@ -7,7 +7,7 @@ public class SessionUtil {
 
     private static final String LOGIN_USER = "loginUser";
 
-    private static void setLoginUser(HttpSession session, Member member){
+    public static void setLoginUser(HttpSession session, Member member){
         session.setAttribute(LOGIN_USER, member);
         session.setMaxInactiveInterval(1800);
     }
