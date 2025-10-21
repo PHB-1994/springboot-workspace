@@ -14,14 +14,14 @@
 
     <div th:if="${error}" class="error-message" th:text="${error}"></div>
 
-    <form action="/login" method="post">
+    <form action="/login" method="post" id="loginForm">
         <div class="form-group">
             <label for="memberEmail">이메일</label>
             <input type="email" id="memberEmail" name="memberEmail" placeholder="이메일 주소 입력" required>
         </div>
         <div class="checkbox-group">
             <label>
-                <input type="checkbox" id="saveIdCheck" name="saveIdCheck" > <!-- th:value="${savedEmail}"-->
+                <input type="checkbox" id="saveId" name="saveId" > <!-- th:value="${savedEmail}"-->
                 아이디 저장
             </label>
         </div>

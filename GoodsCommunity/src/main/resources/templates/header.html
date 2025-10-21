@@ -2,11 +2,10 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/header.css">
 </head>
 <body>
 <div th:fragment="header">
-    <link rel="stylesheet" href="/css/header.css">
-
     <div th:if="${session.loginUser}" class="user-info">
         <span class="user-name" th:text="${session.loginUser.memberName}"></span>
         <span class="user-role"
