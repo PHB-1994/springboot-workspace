@@ -8,12 +8,12 @@
 const getCookie = key => {
     const cookies = document.cookie;
 
-    const cookieList = cookies.split(";").map(el =>el.split("="));
+    const cookieList = cookies.split(";").map(el =>el.trim().split("="));
     
     const obj = {}; // 비어있는 객체로 선언
     
     for(let i =0; i < cookieList.length; i++){
-        const k = cookieList[i][0]; // key 값
+        const k = cookieList[i][0].trim(); // key 값
         const v = cookieList[i][1]; // value 값
         obj[k] = v; // 객체에 추가
     }

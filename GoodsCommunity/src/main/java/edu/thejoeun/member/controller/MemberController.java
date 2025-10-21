@@ -108,10 +108,13 @@ public class MemberController {
     public String logout(HttpSession session, HttpServletResponse res){
         SessionUtil.invalidateLoginUser(session);
 
+        /* 로그아웃 시 아이디 저장되어 있는 saveId 도 삭제된다.
         Cookie userIdCookie = new Cookie("saveId", null);
         userIdCookie.setMaxAge(0);
         userIdCookie.setPath("/");
         res.addCookie(userIdCookie);
+         */
+
         return "redirect:/"; //로그아웃 선택시 모든 쿠키 데이터 지우고 메인으로 돌려보내기
     }
 }
