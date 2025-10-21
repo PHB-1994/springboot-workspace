@@ -10,7 +10,7 @@
     resultType : 자동 매칭 세팅
     -->
 
-    <select id="getMemberByEmail" resultMap="Member">
+    <select id="getMemberByEmail" resultType="Member">
         SELECT *
         FROM member
         WHERE member_email = #{memberEmail}

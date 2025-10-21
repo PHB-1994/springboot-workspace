@@ -81,18 +81,16 @@ body {
 }
 
 .checkbox-group {
-    margin-bottom : 20px;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
 }
-
 .checkbox-group input[type="checkbox"] {
-    width : 18px;
+    width: 18px;
     height: 18px;
     margin-right: 8px;
     cursor: pointer;
 }
-
 .checkbox-group label {
     font-size: 14px;
     color: #555;

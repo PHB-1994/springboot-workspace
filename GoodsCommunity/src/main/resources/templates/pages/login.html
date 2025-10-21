@@ -19,11 +19,10 @@
             <label for="memberEmail">이메일</label>
             <input type="email" id="memberEmail" name="memberEmail" placeholder="이메일 주소 입력" required>
         </div>
-
         <div class="checkbox-group">
             <label>
-            <input type="checkbox" id="saveIdCheck" name="saveIdCheck" th:value="${savedEmail}">
-            아이디 저장
+                <input type="checkbox" id="saveIdCheck" name="saveIdCheck" > <!-- th:value="${savedEmail}"-->
+                아이디 저장
             </label>
         </div>
 
@@ -35,6 +34,6 @@
         <button type="submit" class="btn-login">로그인</button>
     </form>
 </div>
-
+<script src="/js/main.js"></script>
 </body>
 </html>

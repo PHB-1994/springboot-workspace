@@ -2,6 +2,7 @@ package edu.thejoeun.member.controller;
 
 import edu.thejoeun.common.util.SessionUtil;
 import edu.thejoeun.member.model.dto.Member;
+import edu.thejoeun.member.model.service.MemberService;
 import edu.thejoeun.member.model.service.MemberServiceImpl;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,7 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@SessionAttributes({"loginUser"})
+//@SessionAttributes({"loginUser"})
 @Controller
 public class MemberController {
 
@@ -20,21 +21,27 @@ public class MemberController {
     MemberServiceImpl memberService;
 
     @GetMapping("/")
-    public String pageMain(@CookieValue(value = "saveId", required = false) String saveEmail, Model model){
-
-        if(saveEmail != null){
-            model.addAttribute("saveEmail",saveEmail);
-        }
+    public String pageMain(){
+        // return "main";
         return "index";
     }
 
+    //쿠키 설정할 때 아이디 저장 안되면 가장먼저하는 작업
+    // @CookieView 와 Model 은 필요 없음!!!
     @GetMapping("/login")
-    public String pageLogin(){
+    public String pageLogin(
+    ){
         return "pages/login";
     }
 
+    @GetMapping("/member/myPage")
+    public String getMyPage(){
+        return  "pages/myPage";
+    }
+
+
     // GPT or AI 경우 Model 로 모든 것을 처리함
-    // Model 과 RedirectAttributes 구분해서 결과값을 클라이언트한테 전달
+    // Model 과 RedirectAttributes 구분해서 결과값을 클라이언트 전달
     @PostMapping("/login")
     public String login(@RequestParam String memberEmail,
                         @RequestParam String memberPassword,
@@ -44,7 +51,6 @@ public class MemberController {
                         Model model,
                         RedirectAttributes ra){
         Member member = memberService.login(memberEmail, memberPassword);
-
         if(member == null){
             ra.addFlashAttribute("error", "이메일 또는 비밀번호가 일치하지 않습니다.");
             return "redirect:/login"; // 일치하지 않는게 맞다면 로그인 페이지로 돌려보내기
@@ -55,6 +61,7 @@ public class MemberController {
         SessionUtil.setLoginUser(session, member);
 
         // 쿠키에 사용자 정보 저장 (보안상 민감하지 않은 부분만 저장)
+
         Cookie userIdCookie = new Cookie("saveId", memberEmail);
         userIdCookie.setPath("/");
         // 유저 아이디를 아이디 저장이 체크되어 있으면 30일간 유저 아이디 저장
@@ -68,14 +75,12 @@ public class MemberController {
         30일 동안 아이디 명칭을 저장하겠다
          */
 
-        if("on".equals(saveIdCheck)){ // saveId 라는 것이 html 존재하지 않기 때문에 null 발생
         //if(userIdCookie != null && saveId.equals("on")){
-            //                 60초 60분 24시간 30일
-            userIdCookie.setMaxAge(60*60*24*30); // 30일 초 단위로 지정
+        if (userIdCookie != null || saveIdCheck.equals("on")){
+            userIdCookie.setMaxAge(60 * 60 * 24 * 30);
         } else {
-            userIdCookie.setMaxAge(0); // 클라이언트 쿠키 삭제
+            userIdCookie.setMaxAge(0);
         }
-
         res.addCookie(userIdCookie);
 
         return "redirect:/";
@@ -86,30 +91,9 @@ public class MemberController {
         SessionUtil.invalidateLoginUser(session);
 
         Cookie userIdCookie = new Cookie("saveId", null);
-
         userIdCookie.setMaxAge(0);
-
         userIdCookie.setPath("/");
-
         res.addCookie(userIdCookie);
-
-        return "redirect:/"; // 로그아웃 선택 시 모든 쿠키 데이터 지우고 메인으로 돌려보내기
+        return "redirect:/"; //로그아웃 선택시 모든 쿠키 데이터 지우고 메인으로 돌려보내기
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

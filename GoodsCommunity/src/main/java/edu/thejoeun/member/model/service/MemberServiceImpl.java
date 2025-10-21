@@ -36,15 +36,12 @@ public class MemberServiceImpl  implements MemberService {
             return null;
         }
 
-        System.out.println("DB PASSWORD : " + member.getMemberPassword());
-        System.out.println("memberPassword PASSWORD : " + memberPassword);
-
         // 비밀번호 일치하지 않은게 사실이라면 null
         // bc 크립토의 경우 알고리즘
         // 클라이언트가 작성한 비밀번호 -> bcrypt 형태의 알고리즘으로 변환
-        // DB 에서 bcrypt 형태로 변환된 비밀번호를 가져오는 위치
-        //                              클라이언트가 작성한 비밀번호, DB 에 저장된 비밀번호
-        if(!bCryptPasswordEncoder.matches(memberPassword, member.getMemberPassword())) {
+        // DB에서 bcrypt 형태로 변환된 비밀번호를 가져오는 위치
+        //                                클라이언트가 작성한 비밀번호, db에 저장된 비밀번호
+        if(!bCryptPasswordEncoder.matches(              memberPassword, member.getMemberPassword())) {
             return null;
         }
 
