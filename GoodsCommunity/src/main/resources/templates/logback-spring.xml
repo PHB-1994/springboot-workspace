@@ -1,2 +1,121 @@
-<!-- 스프링 부트 관련하여 기본 로그 파일 세팅 -->
-<configuration scan="true" scanPeriod="60 seconds"></configuration>
+<!--
+애플리케이션이 실행되면서 발생하는 로그(기록)를 어떻게,
+어디에, 어떤 형식으로 출력할 것인지 상세하게 정의
+-->
+<configuration scan="true" scanPeriod="60 seconds">
+    <!-- 1분(60초) 마다 설정 변경 사항을 파악한 후 파일 갱신 -->
+
+    <!-- config.properties 에 아래 내용 추가
+    log.config.path     (로그 파일 저장 경로)
+    log.config.fileName (로그 파일 이름)
+    config.properties 에 추가되는 것이 아닌 세팅 정도
+    maxHistory  : 로그 파일을 보관할 최대 기간(30일)
+    maxFileSize : 로그 파일 1개당 최대 크기 (10MB)
+    -->
+    <property resource="config.properties" />
+
+    <property name="logPath"		value="${log.config.path}" /> <!-- config.properties에서 얻어온 값-->
+    <property name="fileName"		value="${log.config.fileName}" />  <!-- config.properties에서 얻어온 값-->
+    <property name="maxHistory"		value="30" />
+    <property name="maxFileSize"	value="10MB" />
+
+    <!--
+    ============================ Spring Boot 로그 기본 설정 ============================
+    conversionRule = 로그를 출력할 때 커스텀 규칙 정의
+        clr 색상
+        wex 예외 추적 스택 단순히 예쁘게 보여주기
+        wEx 예외 추적 스택 확장 버전 어떤 JAR 파일과 버전에서 발생한 오류인지 자세히 보여주기
+            wex 하는 모든 것을 포함한 상태에서
+            해당 클래스가 어떤 JAR 파일에서 로드되었는지, 그 JAR 버전은 무엇인지 같은 패키징 정보를 함께 출력
+
+    property     = 콘솔에 로그를 작성할 때 형식을 정의
+        예 ) [시간] [레벨] [프로세스ID] [쓰레드명] [클래스명] : [메세지]
+
+    appender     = 로그를 어디에 보낼지 결정하는 목적지
+        console 이라는 이름의 Appender 를 만들고, ConsoleAppender 콘솔로 지정
+
+    logger       = Tomcat, Hibernate 등 내부 라이브러리들이 엄청나게 많은 INFO 로그를 찍음
+    너무 시끄러운 특정 라이브러리들의 로그 레벨을 WRAN 이나 ERROR 로 올려서, 불필요한 로그가 콘솔을 도배하는 것을 막아줌
+    -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+
+    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){green} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <property name="CONSOLE_LOG_CHARSET" value="${CONSOLE_LOG_CHARSET:-default}"/>
+
+    <property name="FILE_LOG_PATTERN" value="${FILE_LOG_PATTERN:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <property name="FILE_LOG_CHARSET" value="${FILE_LOG_CHARSET:-default}"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>${CONSOLE_LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+    <logger name="org.apache.catalina.startup.DigesterFactory" level="ERROR"/>
+    <logger name="org.apache.catalina.util.LifecycleBase" level="ERROR"/>
+    <logger name="org.apache.coyote.http11.Http11NioProtocol" level="WARN"/>
+    <logger name="org.apache.sshd.common.util.SecurityUtils" level="WARN"/>
+    <logger name="org.apache.tomcat.util.net.NioSelectorPool" level="WARN"/>
+    <logger name="org.eclipse.jetty.util.component.AbstractLifeCycle" level="ERROR"/>
+    <logger name="org.hibernate.validator.internal.util.Version" level="WARN"/>
+    <logger name="org.springframework.boot.actuate.endpoint.jmx" level="WARN"/>
+
+    <!-- ============================ 로그파일 저장 설정 ============================
+    로그를 파일로 저장하되, 특정 정책(시간, 용량)에 따라 파일을 분리해서 관리
+    rollingPolicy
+        fileNamePattern : 로그 파일의 이름 규칙
+                            ${logPath}${fileName}                           .%d{yyyy-MM-dd}_%i.log
+                            config.properties 에서 설장한 경로와 파일이름       2025-10-22.log 처럼 날짜별로 저장
+                                                                                       _%i 는 만약 하루가 지나기 전에 파일 크기가 위에서 지정한 10MB 를 넘으면
+                                                                                       _0, _1 처럼 숫자가 붙으며 파일 분리
+
+    encoder : 파일에 로그를 저장할 때 사용할 패턴(형식) 지정
+        FILE_LOG_PATTERN 변수 사용
+        위에서 지정한
+        <property name="FILE_LOG_PATTERN" value="${FILE_LOG_PATTERN:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+        이 패턴대로 지정
+    -->
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+
+            <fileNamePattern>${logPath}${fileName}.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+
+            <maxHistory>${maxHistory}</maxHistory>
+
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>${FILE_LOG_CHARSET}</charset>
+        </encoder>
+
+    </appender>
+
+    <!--
+    root 태그는 모든 로그의 최상위 설정이자, 위에서 만든 Appender 들을 실제로 적용하는 부분
+    <root level="INFO">
+        전역 로그 레벨을 INFO 로 설정
+        즉, 개발자가 log.info(), log.warn(), log.error() 찍은 것만 출력되고
+         log.debug() 나 log.trace() 는 따로 설정하지 않는 한 무시
+
+         INFO 이상의 모든 로그를 CONSOLE Appender(콘솔)로 보내기        -> 개발자에게 알림용
+         INFO 이상의 모든 로그를 ROLLING Appender(로그 파일)로 보내기   -> 회사에서 컴플레인 대비하기 위한 보관용
+
+     로그 레벨 : TRACE < DEBUG < INFO < WARN < ERROR
+
+    -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="ROLLING" />
+    </root>
+
+
+</configuration>

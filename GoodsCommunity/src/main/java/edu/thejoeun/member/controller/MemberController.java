@@ -7,14 +7,16 @@ import edu.thejoeun.member.model.service.MemberServiceImpl;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-// @SessionAttributes({"loginUser"}) SessionUtil SessionAttribuites 동시에 유저 정보 저장
+// @SessionAttributes({"loginUser"}) SessionUtil SessionAttributes 동시에 유저 정보 저장
 @Controller
+@Slf4j // log 를 출력하게 해주는 어노테이션
 public class MemberController {
 
     @Autowired
@@ -95,11 +97,16 @@ public class MemberController {
          * if ("on".equals(saveId)){
          */
         if ("on".equals(saveId)){
-            userIdCookie.setMaxAge(60 * 60 * 24 * 30);
+            userIdCookie.setMaxAge(60 * 60 * 24 * 30); // 쿠키 30일 단위 추가
         } else {
-            userIdCookie.setMaxAge(0);
+            userIdCookie.setMaxAge(0); // 쿠키 삭제
         }
-        res.addCookie(userIdCookie);
+        res.addCookie(userIdCookie); // 응답 객체에 쿠키 추가 -> 클라이언트 전달
+
+        String des = (String) session.getAttribute("destination");
+        log.info("destination : {}", des);
+        String logUser = (String) session.getAttribute("loginUser");
+        log.info("loginUser : {}", logUser);
 
         return "redirect:/";
     }
