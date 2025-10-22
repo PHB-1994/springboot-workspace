@@ -103,9 +103,9 @@ public class MemberController {
         }
         res.addCookie(userIdCookie); // 응답 객체에 쿠키 추가 -> 클라이언트 전달
 
-        String des = (String) session.getAttribute("destination");
+        Member des = (Member) session.getAttribute("destination");
         log.info("destination : {}", des);
-        String logUser = (String) session.getAttribute("loginUser");
+        Member logUser = (Member) session.getAttribute("loginUser");
         log.info("loginUser : {}", logUser);
 
         return "redirect:/";
