@@ -112,7 +112,11 @@ public class EmailServiceImpl implements EmailService{
 
         // templates/pages/auth 폴더에서 htmlName 과 같은
         // .html 파일 내용을 읽어와 String 으로 변환
-        return templateEngine.process("pages/auth" + htmlName, context);
+        // return templateEngine.process("pages/auth" + htmlName, context); 아래처럼 경로가 됨
+        // pages/authsignup.html
+        // return templateEngine.process("pages/auth/" + htmlName, context); 마지막에 / 추가
+        // pages/auth/signup.html
+        return templateEngine.process("pages/auth/" + htmlName, context);
     }
 
     /**
