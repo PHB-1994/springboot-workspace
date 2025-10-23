@@ -6,9 +6,9 @@ import java.util.Map;
 
 @Mapper
 public interface EmailMapper {
-    int updateAuthKey(Map<String, Object> map);
+    int updateAuthKey(Map<String, String> map);
 
-    int insertAuthKey(Map<String, Object> map);
+    int insertAuthKey(Map<String, String> map);
 
     int checkAuthKey(Map<String, Object> map);
 }
