@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 상세</title>
+
+    <th:block th:replace="~{common/common}"></th:block>
+
+    <link rel="stylesheet" href="/css/board/boardDetail.css">
+</head>
+<body>
+
+<th:block th:replace="~{header :: header}"></th:block>
+
+<main>
+    <div class="board-detail-container">
+
+        <h1 class="board-title">게시글 제목이 표시됩니다</h1>
+
+        <div class="board-info">
+            <div class="info-left">
+                <span>작성자: </span>
+                <span class="board-writer">닉네임</span>
+            </div>
+            <div class="info-right">
+                <span class="board-date">작성일: 2025-10-27</span>
+                <span class="board-views">조회수: 0</span>
+            </div>
+        </div>
+
+        <div class="board-content">
+            <p>게시글 내용이 여기에 표시됩니다.</p>
+            <p>내용이 길어질 경우 이 영역이 늘어납니다.</p>
+        </div>
+
+        <div class="board-controls">
+            <!--
+            <th:block th:if="${session.loginMember != null AND session.loginMember.memberNo == board.memberNo}">
+                <button class="btn btn-edit" th:onclick="|location.href='@{/board/edit/{boardNo}(boardNo=${board.boardNo})}'|">
+                    <i class="fa-solid fa-pen-to-square"></i> 수정
+                </button>
+                <button class="btn btn-delete" id="deleteBtn" th:data-board-no="${board.boardNo}">
+                    <i class="fa-solid fa-trash"></i> 삭제
+                </button>
+            </th:block>
+            -->
+            <button class="btn btn-list" onclick="gotoList()">
+                <i class="fa-solid fa-list"></i> 목록
+            </button>
+        </div>
+
+        <hr>
+        <div class="comment-section">
+            <h2>댓글</h2>
+
+            <div class="comment-list" id="commentList">
+                <div class="comment-empty">
+                    <p>작성된 댓글이 없습니다.</p>
+                </div>
+
+                <div class="comment">
+                    <div class="comment-info">
+                        <span class="comment-writer">댓글작성자</span>
+                        <span class="comment-date">2025-10-27</span>
+                    </div>
+                    <p class="comment-content">댓글 내용입니다.</p>
+                </div>
+            </div>
+            <!--
+            <div class="comment-write-area" th:if="${session.loginMember != null}">
+                <textarea id="commentContent" placeholder="댓글을 입력해주세요..."></textarea>
+                <button id="addCommentBtn" class="btn btn-primary">
+                    <i class="fa-solid fa-paper-plane"></i> 등록
+                </button>
+            </div>
+            <div class="comment-login-prompt" th:if="${session.loginMember == null}">
+                <p>댓글을 작성하려면 <a href="/member/login">로그인</a>이 필요합니다.</p>
+            </div>
+            -->
+        </div>
+
+    </div> </main>
+
+<script src="/js/board.js"></script>
+</body>
+</html>
