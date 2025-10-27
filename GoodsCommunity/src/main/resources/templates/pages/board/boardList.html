@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판</title>
+    <th:block th:replace="~{common/common}"></th:block>
+    <link rel="stylesheet" href="css/board/board.css">
+</head>
+<body>
+<!--
+div 태그로 감싸져 header.html 에 작성된 html css 가져옴
+div 태그를 안쓰고 단순히 header.html 에 작성된 html css 가져오길 원한다면
+th:block 을 이용하면 div 태그를 이용하지 않고 가져오기 상태만 된다.
+<th:block th:replace="~{header :: header}"></th:block>
+-->
+<div th:replace="~{header :: header}"></div>
+<div class="container">
+    <h1>📋 게시판</h1>
+
+    <button class="btn btn-refresh" onclick="fetchBoardData()">
+        <i class="fa-solid fa-rotate-right"></i>새로고침
+    </button>
+    <button class="btn btn-write" onclick="location.href='/board/write'">
+        <i class="fa-solid fa-pen"></i>글쓰기
+    </button>
+
+    <div id="loading" class="loading">
+        <i class="fa-solid fa-spinner fa-spin"></i>데이터를 불러오는 중...</div>
+    <div id="error" class="error" style="display: none;"></div>
+    <div class="table-wrapper">
+        <table class="board-table" id="boardTable" style="display: none;">
+            <thead>
+            <tr>
+                <th style="width: 80px;">번호</th>
+                <th>제목</th>
+                <th style="width: 120px;">작성자</th>
+                <th style="width: 100px;">조회수</th>
+                <th style="width: 180px;">작성일</th>
+            </tr>
+            </thead>
+            <tbody id="boardBody">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="viewModal" class="view-modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <div class="post-title" id="modalTitle"></div>
+        <div class="post-info" id="modalInfo"></div>
+        <div class="post-content" id="modalContent"></div>
+    </div>
+</div>
+
+<script src="js/board.js"></script>
+</body>
+</html>

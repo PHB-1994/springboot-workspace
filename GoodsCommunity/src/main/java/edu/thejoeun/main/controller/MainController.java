@@ -15,4 +15,9 @@ public class MainController {
     public String pageSignUp(){
         return "pages/signup";
     }
+
+    @GetMapping("/board")
+    public String pageBoard(){
+        return "pages/board/boardList";
+    }
 }
