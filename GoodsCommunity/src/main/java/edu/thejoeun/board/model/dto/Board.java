@@ -23,4 +23,9 @@ public class Board {
     private int viewCount;
     private String createdAt; // DB 명칭 created_at
     private String updatedAt; // DB 명칭 updated_at
+
+    // 인기글 전용 필드(일반 게시글 조회 시에는 null)
+    // private int ranking;            // 인기글 순위
+    private Integer ranking;           // 인기글 순위
+    private String popularUpdateAt;    // 인기글 업데이트 시간
 }

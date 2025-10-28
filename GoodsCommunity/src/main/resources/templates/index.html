@@ -10,8 +10,101 @@
     <div th:replace="~{header :: header}"></div>
     <div class="popular-board-container">
         <h2>인기 게시글</h2>
-        <div class="popular-board-update-time">업데이트 시간</div>
-        <div class="popular-board-list" id="popularBoardList"></div>
+        <div class="popular-board-update-time" id="updateTime">
+            업데이트 시간: 로딩 중...
+        </div>
+        <div class="popular-board-list" id="popularBoardList">
+            <!-- 인기글 목록이 추가됩니다 -->
+        </div>
     </div>
+<script>
+    // 인기글 목록 로드
+    function loadPopularBoards() {
+        fetch('/api/board/popular')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('네트워크 응답 오류');
+                }
+                return response.json();
+            })
+            .then(boards => {
+                displayPopularBoards(boards);
+            })
+            .catch(error => {
+                console.error('인기글 로드 실패:', error);
+                document.getElementById('popularBoardList').innerHTML =
+                    '<p style="color: #666; text-align: center;">인기글을 불러오는 중 오류가 발생했습니다.</p>';
+            });
+    }
+
+    // 인기글 화면에 표시
+    function displayPopularBoards(boards) {
+        const listContainer = document.getElementById('popularBoardList');
+        const updateTimeElement = document.getElementById('updateTime');
+
+        // 업데이트 시간 설정
+        if (boards.length > 0 && boards[0].popularUpdatedAt) {
+            const updateTime = new Date(boards[0].popularUpdatedAt);
+            updateTimeElement.textContent = `업데이트 시간: ${formatDateTime(updateTime)}`;
+        } else {
+            updateTimeElement.textContent = '업데이트 시간: 정보 없음';
+        }
+
+        // 인기글이 없는 경우
+        if (!boards || boards.length === 0) {
+            listContainer.innerHTML =
+                '<p style="color: #666; text-align: center;">등록된 인기글이 없습니다.</p>';
+            return;
+        }
+
+        // 인기글 목록 생성
+        listContainer.innerHTML = boards.map((board, index) => `
+                <div class="popular-board-item" onclick="goToBoard(${board.id})">
+                    <div class="popular-rank ${index < 3 ? 'top3' : ''}">${index + 1}</div>
+                    <div class="popular-content">
+                        <div class="popular-title">${escapeHtml(board.title)}</div>
+                        <div class="popular-meta">
+                            <span>${escapeHtml(board.writer)}</span> |
+                            <span class="popular-view-count">조회 ${board.viewCount}</span> |
+                            <span>${formatDate(board.createdAt)}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    // 게시글 상세 페이지로 이동
+    function goToBoard(boardId) {
+        window.location.href = `/board/${boardId}`;
+    }
+
+    // 날짜 포맷팅 (YYYY-MM-DD)
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ko-KR');
+    }
+
+    // 날짜/시간 포맷팅 (YYYY-MM-DD HH:MM)
+    function formatDateTime(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+    }
+
+    // HTML 특수문자 이스케이프
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // 페이지 로드 시 인기글 목록 가져오기
+    document.addEventListener('DOMContentLoaded', function() {
+        loadPopularBoards();
+    });
+</script>
 </body>
 </html>
