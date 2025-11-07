@@ -23,10 +23,19 @@
     javaType : List(컬렉션)의 타입을 지정
     ofType   : List(컬렉션)의 제네릭(타입 제한) 지정
     -->
-        <select id="getAllBoard" resultType="Board">
+    <!--
+    ORDER BY created_at DESC 에서
+    만든날짜 시분초 모두 동일할 경우
+    id 오름차순으로 정렬
+    -> ORDER BY created_at DESC, id DESC
+    id 를 내림차순 정렬을 추가하면
+    작성일 모두 동일할 때
+    2순위인 id 를 내림차순으로 정렬 설정
+    -->
+    <select id="getAllBoard" resultType="Board">
         SELECT *
         FROM board
-        ORDER BY created_at DESC
+        ORDER BY created_at DESC, id DESC
     </select>
     <!--
     parameterType
