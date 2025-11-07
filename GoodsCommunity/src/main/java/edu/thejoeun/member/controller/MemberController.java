@@ -21,12 +21,18 @@ public class MemberController {
 
     @Autowired
     MemberServiceImpl memberService;
+    /*
+    Caused by: java.lang.IllegalStateException: Ambiguous mapping. Cannot map 'memberController' method
+    edu.thejoeun.member.controller.MemberController#pageMain()
+    to {GET [/]}: There is already 'mainController' bean method
+    edu.thejoeun.main.controller.MainController#pageMain() mapped.
 
     @GetMapping("/")
     public String pageMain(){
         // return "main";
         return "index";
     }
+     */
 
     // 쿠키 설정할 때 아이디 저장 안되면 가장먼저하는 작업
     // @CookieView 와 Model 은 필요 없음!!!

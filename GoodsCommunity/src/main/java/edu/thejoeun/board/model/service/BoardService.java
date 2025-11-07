@@ -8,4 +8,6 @@ public interface BoardService {
 
     List<Board> getAllBoard();
     Board getBoardById(int id);
+
+    void createBoard(Board board);
 }

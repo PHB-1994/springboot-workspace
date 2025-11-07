@@ -54,6 +54,21 @@
     인기 게시물 조회(조회수 높은 순)
     -->
 
+    <!--
+    insert / update -> parameterType
+    select          -> resultType
+    -->
+    <insert id="insertBoard" parameterType="Board">
+        INSERT INTO board(title, content, writer)
+        VALUES(#{title}, #{content}, #{writer})
+    </insert>
+
+    <update id="updateViewCount" parameterType="int">
+        UPDATE board
+        SET view_count = view_count + 1
+        WHERE id = #{id}
+    </update>
+
 
 
 </mapper>

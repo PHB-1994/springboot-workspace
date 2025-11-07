@@ -52,4 +52,9 @@ public class BoardController {
     }
     */
 
+    @PostMapping // api endpoint = /api/board 맨 위에 작성한 RequestMapping 에 해당
+    public void createBoard(@RequestBody Board board) {
+        boardService.createBoard(board);
+    }
+
 }

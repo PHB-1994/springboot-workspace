@@ -12,5 +12,29 @@ public interface BoardMapper {
     // id 와 메서드 명칭은 일치
     List<Board> getAllBoard();
 
+    /**
+     * 게시물 클릭하면 상세 조회
+     * @param id 에 해당하는
+     * @return 게시물 데이터 반환
+     */
     Board getBoardById(int id);
+
+    /**
+     * 작성한 게시물 저장
+     * @param board 게시물 데이터 가져오기
+     */
+    void insertBoard(Board board);
+
+    /**
+     * 게시물 데이터 제목, 내용, 저자 수정불가, 업데이트 일자 변경
+     * @param board
+     */
+    void updateBoard(Board board);
+
+    /**
+     * 게시물 상세보기 선택했을 경우
+     * 해당 게시물에 조회수를 증가
+     * @param id
+     */
+    void updateViewCount(int id);
 }
