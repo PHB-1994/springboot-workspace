@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Slf4j // log 를 출력하게 해주는 어노테이션
 public class MemberController {
 
+
     @Autowired
     MemberServiceImpl memberService;
     /*
@@ -34,6 +35,7 @@ public class MemberController {
     }
      */
 
+    /*
     // 쿠키 설정할 때 아이디 저장 안되면 가장먼저하는 작업
     // @CookieView 와 Model 은 필요 없음!!!
     @GetMapping("/login")
@@ -85,6 +87,7 @@ public class MemberController {
         30일 동안 아이디 명칭을 저장하겠다
          */
 
+
         // userIdCookie != null
         /* 문자열1.equals(문자열2)
         String 내부에 작성되어 있는 메서드 .equals() 는
@@ -102,6 +105,7 @@ public class MemberController {
          * if (saveId.equals("on")){
          * if ("on".equals(saveId)){
          */
+        /*
         if ("on".equals(saveId)){
             userIdCookie.setMaxAge(60 * 60 * 24 * 30); // 쿠키 30일 단위 추가
         } else {
@@ -126,8 +130,9 @@ public class MemberController {
         userIdCookie.setMaxAge(0);
         userIdCookie.setPath("/");
         res.addCookie(userIdCookie);
-         */
+
 
         return "redirect:/"; //로그아웃 선택시 모든 쿠키 데이터 지우고 메인으로 돌려보내기
     }
+    */
 }
