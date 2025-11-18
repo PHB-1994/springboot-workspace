@@ -22,8 +22,6 @@ public class MemberServiceImpl  implements MemberService {
 
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
-
-
     @Override
     public Member login(String memberEmail, String memberPassword) {
         Member member = memberMapper.getMemberByEmail(memberEmail);
@@ -50,7 +48,7 @@ public class MemberServiceImpl  implements MemberService {
         if(m == null) {
             res.put("success",false);
             res.put("message", "이메일 또는 비밀번호가 일치하지 않습니다.");
-            log.warn("로그인 실페 : {}", memberEmail);
+            log.warn("로그인 실패 : {}", memberEmail);
             return res;
         }
 
@@ -92,7 +90,8 @@ public class MemberServiceImpl  implements MemberService {
 
         if(loginUser == null) {
             res.put("success",false);
-            res.put("로그인 상태 확인 : {}", loginUser.getMemberEmail());
+            res.put("user", null);
+            log.debug("로그인 상태 확인: 로그인되지 않음");
         } else {
             res.put("loggedIn", true);
             res.put("user", loginUser);
@@ -100,5 +99,15 @@ public class MemberServiceImpl  implements MemberService {
         }
 
         return res;
+    }
+
+    public void saveMember(Member member) {
+        String originPw = member.getMemberPassword(); // 기존 클라이언트 비밀번호 가져오기
+        String encodePw = bCryptPasswordEncoder.encode(originPw); // 비밀번호 암호화
+        member.setMemberPassword(encodePw); // 암호화처리된 비밀번호로 교체
+
+        // 교체된 비밀번호 포함해서 저장
+        // 비밀번호 암호화해서 저장
+        memberMapper.saveMember(member);
     }
 }

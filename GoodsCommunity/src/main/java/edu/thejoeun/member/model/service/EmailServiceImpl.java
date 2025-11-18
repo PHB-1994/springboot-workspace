@@ -1,5 +1,6 @@
 package edu.thejoeun.member.model.service;
 
+import edu.thejoeun.member.model.dto.Member;
 import edu.thejoeun.member.model.mapper.EmailMapper;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,4 +186,5 @@ public class EmailServiceImpl implements EmailService{
     public int checkAuthKey(Map<String, Object> map) {
         return emailMapper.checkAuthKey(map);
     }
+
 }

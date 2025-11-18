@@ -17,3 +17,4 @@ public class SessionUtil {
         // 모든 세션을 지우는 것이 아니라 세션만 지워 로그아웃 처리
     }
 }
+

@@ -16,4 +16,14 @@
         WHERE member_email = #{memberEmail}
     </select>
 
+    <!-- saveMember
+    private String memberName;
+    private String memberEmail;
+    private String memberPassword;
+    -->
+    <insert id="saveMember" parameterType="Member">
+        INSERT INTO member(member_name, member_email, member_password)
+        VALUES(#{memberName}, #{memberEmail}, #{memberPassword})
+    </insert>
+
 </mapper>

@@ -9,4 +9,5 @@ public interface MemberService {
      */
     Member login(String memberEmail, String memberPassword);
 
+    void saveMember(Member member);
 }

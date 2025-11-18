@@ -1,5 +1,7 @@
 package edu.thejoeun.member.model.service;
 
+import edu.thejoeun.member.model.dto.Member;
+
 import java.util.Map;
 
 public interface EmailService {
@@ -18,4 +20,5 @@ public interface EmailService {
      * @return count
      */
     int checkAuthKey(Map<String, Object> map);
+
 }

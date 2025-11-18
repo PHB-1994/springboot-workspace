@@ -50,4 +50,22 @@ public class MemberApiController {
     public Map<String, Object> checkLoginStatus(HttpSession session){
         return memberService.checkLoginStatus(session);
     }
+
+    // const res = axios.post("/api/auth/signup",signupData);
+    // PostMapping 만들기
+    // mapper.xml -> mapper.java -> service.java -> serviceImpl.java apiController.java
+    @PostMapping("/signup")
+    public void signup(@RequestBody Member member) {
+        log.info("=== 회원가입 요청===");
+        log.info("요청 데이터 - 이름 : {}, 이메일{}",member.getMemberName(),member.getMemberEmail());
+
+        try{
+            memberService.saveMember(member);
+            log.info("회원가입 성공 - 이메일 : {}",member.getMemberEmail());
+        } catch (Exception e){
+            log.error("회원가입 실패 - 이메일 : {}, 에러 : {}", member.getMemberEmail(), e.getMessage());
+        }
+    }
+
 }
+
