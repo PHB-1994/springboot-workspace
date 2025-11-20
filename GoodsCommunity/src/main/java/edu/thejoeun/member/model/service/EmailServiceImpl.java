@@ -3,6 +3,7 @@ package edu.thejoeun.member.model.service;
 import edu.thejoeun.member.model.dto.Member;
 import edu.thejoeun.member.model.mapper.EmailMapper;
 import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.MailSender;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @Service
 @Transactional // 예외 발생하면 롤백할게 (기본값으로 커밋)
+@Slf4j
 public class EmailServiceImpl implements EmailService{
 
     @Autowired // EmailConfig 에 설정된 메일보내기 기능과 관련 환경설정 사용
@@ -28,6 +30,7 @@ public class EmailServiceImpl implements EmailService{
 
     @Autowired // 템플릿 엔진 이용해서 auth/signup.html 에 있는 html 코드를 java 로 변환
     private SpringTemplateEngine templateEngine;
+
     @Autowired
     private EmailMapper emailMapper;
 
@@ -92,7 +95,7 @@ public class EmailServiceImpl implements EmailService{
         return authKey;
         /*
         필요한 타입: Map<String,Object>
-        제공된 타입:Map<String, String>
+        제공된 타입: Map<String, String>
 
         Map<String, String> map = new HashMap<>();
 
@@ -184,6 +187,7 @@ public class EmailServiceImpl implements EmailService{
     // 이메일, 인증번호 확인
     @Override
     public int checkAuthKey(Map<String, Object> map) {
+        log.info("service map data : {}", map);
         return emailMapper.checkAuthKey(map);
     }
 

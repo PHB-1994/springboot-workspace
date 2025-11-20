@@ -2,6 +2,7 @@ package edu.thejoeun.member.controller;
 
 import edu.thejoeun.member.model.service.EmailService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/email") // 아래 작성하는 모든 주소 앞에 email 을 붙이겠다.
 @RequiredArgsConstructor // @Autowired 생성자 방식을 모두 자동으로 완성
+@Slf4j
 // 하나하나 @Autowired 작성 안해도 됨
 public class EmailController {
 
@@ -34,6 +36,7 @@ public class EmailController {
      */
     @PostMapping("/checkAuthKey") // api : email/checkAuthKey
     public int checkAuthKey(Map<String, Object> map) {
+        log.info("인증키 번호 : {}", map);
         // 입력받은 이메일, 인증번호가 있는지 조회
         // 이메일 있고, 인증번호 일치 == 1 일치하지 않으면 0 이 나올 것
         return  emailService.checkAuthKey(map);
