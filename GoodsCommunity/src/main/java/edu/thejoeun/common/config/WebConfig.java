@@ -20,11 +20,19 @@ public class WebConfig {
         return new WebMvcConfigurer() { // new WebMvcConfigurer 객체 사용 후 return 을 한 번에 작성하는 방식
             @Override
             public void addCorsMappings(CorsRegistry registry) { // Cors 매핑 추가 기능
+                // REST API CORS 설정
                 registry.addMapping("/api/**")        // /api/ 로 시작하는 모든 하위 경로에 대해 접근 허용
                         .allowedOrigins("http://localhost:3000") // 요청을 허용할 출처를 지정
                         .allowCredentials(true)                  // 쿠키, HTTP 인증을 포함한 요청을 허용할 것인가
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS") // 허용할 HTTP 메서드 종류
                         .allowedHeaders("*");                    // 허용할 HTTP 요청 헤더
+
+                // WebSocket CORS 설정 추가
+                registry.addMapping("/ws/**")
+                        .allowedOrigins("http://localhost:3000")
+                        .allowCredentials(true)
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+                        .allowedHeaders("*");
             }
         };
     }
