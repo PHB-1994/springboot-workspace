@@ -59,8 +59,8 @@
     <!-- 상품 등록 -->
     <insert id="insertProduct" parameterType="Product" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO product(
-            product_name, product_code, category, price, stock_quantity, description, manufacturer, image_url, is_active)
-        VALUES (#{productName}, #{productCode}, #{category}, #{price}, #{stockQuantity}, #{description}, #{manufacturer}, #{imageUrl},#{isActive})
+            product_name, product_code, category, price, stock_quantity, description, manufacturer, image_url)
+        VALUES (#{productName}, #{productCode}, #{category}, #{price}, #{stockQuantity}, #{description}, #{manufacturer}, #{imageUrl})
     </insert>
 
     <!-- 상품 수정 -->
