@@ -12,7 +12,7 @@ public interface ProductMapper {
     List<Product> getAllProducts();
 
     // 상품 상세 조회
-    Product getProductById(Long id);
+    Product getProductById(int id);
 
     // 상품 코드로 조회
     Product getProductByCode(String productCode);
@@ -28,7 +28,7 @@ public interface ProductMapper {
     int  = 등록데이터가 0 부터 n 개 까지 저장 확인 가능 (다수의 상품 등록 사용)
     void = 등록데이터의 유무만 확인 가능 성공 / 실패
     */
-    // 상품 수정
+    // 상품 등록
     int insertProduct(Product product);
 
     // 상품 수정
