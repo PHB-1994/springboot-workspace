@@ -130,7 +130,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void deleteProductById(int id) {
+    public void deleteProduct(int id) {
         log.info("상품 삭제 시작 - {}", id);
 
         // 상품이 존재하는지 확인
@@ -143,7 +143,7 @@ public class ProductServiceImpl implements ProductService {
         // void validateProduct(product);
         // 메서드를 만들어, 데이터를 저장하기 전에 백엔드에서 한 번 더 유효성 검사 진행
 
-        int result = productMapper.deleteProductById(id);
+        int result = productMapper.deleteProduct(id);
         if(result > 0){
             log.info("상품 삭제 완료 - ID : {}", id);
         } else {

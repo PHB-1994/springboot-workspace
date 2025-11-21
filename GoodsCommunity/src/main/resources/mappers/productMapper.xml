@@ -78,7 +78,7 @@
     </update>
 
     <!-- 상품 삭제 (진짜 삭제하는 것이 아니라 비활성화 상태 변경) -->
-    <update id="deleteProductById" parameterType="Product">
+    <update id="deleteProduct" parameterType="Product">
         UPDATE product
         SET is_active = FALSE
         WHERE id = #{id}

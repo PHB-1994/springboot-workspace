@@ -33,7 +33,7 @@ public interface ProductService {
     void updateProduct(Product product);
 
     // 상품삭제
-    void deleteProductById(int id);
+    void deleteProduct(int id);
 
     // 재고 업데이트
     void updateStock(int id, int quantity);

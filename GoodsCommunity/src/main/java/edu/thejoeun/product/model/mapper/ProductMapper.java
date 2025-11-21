@@ -35,7 +35,7 @@ public interface ProductMapper {
     int updateProduct(Product product);
 
     // 상품삭제
-    int deleteProductById(int id);
+    int deleteProduct(int id);
 
     // 재고 업데이트
     int updateStock(int id, int quantity);
