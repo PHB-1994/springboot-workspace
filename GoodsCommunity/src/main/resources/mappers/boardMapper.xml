@@ -66,8 +66,11 @@
     <!--
     insert / update -> parameterType
     select          -> resultType
+
+    useGeneratedKeys : 데이터베이스에서 자동으로 생성된 키를 가져올지 여부. 기본값 : false
+    keyProperty      : 자동으로 생성된 키 값을 어떤 java 객체의 필드에 담을지 지정하는 속성
     -->
-    <insert id="insertBoard" parameterType="Board">
+    <insert id="insertBoard" parameterType="Board" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO board(title, content, writer)
         VALUES(#{title}, #{content}, #{writer})
     </insert>

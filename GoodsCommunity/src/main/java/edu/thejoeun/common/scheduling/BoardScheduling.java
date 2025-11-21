@@ -36,7 +36,7 @@ public class BoardScheduling {
     // 실제 배포할 때 사용할 스케줄링 : @Scheduled(cron = "0 59 23 * * *")
     // 개발자가 스케줄링이 제대로 작동하는지 확인하는 스케줄링 : @Scheduled(cron = "0 * * * * *")
     // 10초마다 실행 @Scheduled(cron = "*/10 * * * * *")
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void updatePopularBoards(){
         String startTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         // printf() 처럼 {} 를 작성하면 , 변수이름에 존재하는 데이터가 {} 내부에 작성
