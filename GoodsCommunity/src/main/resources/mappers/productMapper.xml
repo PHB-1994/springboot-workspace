@@ -35,7 +35,7 @@
     <select id="getProductsByCategory" resultType="Product">
         SELECT *
         FROM product
-        WHERE product_category = #{category}
+        WHERE category = #{category}
         AND is_active = true
         ORDER BY created_at DESC
     </select>
