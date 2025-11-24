@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.thejoeun.common.scheduling.Mapper.SchedulingMapper">
+
+    <!-- 조회수 기준 10개 게시글을 인기글로 등록 -->
+    <insert id="insertPopularBoards" parameterType="Board">
+        INSERT INTO popular_board(board_id, ranking, updated_at)
+        SELECT
+            id, ROW_NUMBER() OVER(ORDER BY view_count DESC) as ranking, NOW()
+        FROM board
+        ORDER BY view_count DESC
+        LIMIT 10
+    </insert>
+
+    <!-- 인기글 목록 조회 -->
+    <select id="selectPopularBoards" resultType="Board">
+        SELECT
+            b.id, b.title, b.content, b.view_count, b.created_at, b.updated_at, p.ranking, p.updated_at
+        FROM popular_board p
+        JOIN board b ON board_id = b.id
+        ORDER BY p.ranking ASC
+    </select>
+
+    <!-- 인기 게시글 삭제 -->
+    <delete id="deleteAllPopularBoards">
+        DELETE FROM popular_board
+    </delete>
+
+</mapper>

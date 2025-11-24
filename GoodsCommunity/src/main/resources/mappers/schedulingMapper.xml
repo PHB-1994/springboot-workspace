@@ -6,14 +6,40 @@
 
 <mapper namespace="edu.thejoeun.common.scheduling.Mapper.SchedulingMapper">
 
+    <!--
+    Orcale 에서는 LIMIT 대신 FETCH FIRST 또는 ROWNUM 사용 -> ROWNUM 코드가 번잡
+    Now() 대신 SYSDATE 또는 CURRENT_TIMESTAMP 사용
+
+    LIMIT 10 ->
+        1번 방법 ROWNUM
+                <insert id="insertPopularBoards" parameterType="Board" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+                INSERT INTO popular_board(board_id, ranking, updated_at)
+                SELECT id,ranking, CURRENT_TIMESTAMP
+                FROM (
+                    SELECT id, ROW_NUMBER() OVER(ORDER BY view_count DESC) as ranking
+                    FROM board
+                    ORDER BY view_count DESC
+                    )
+                WHERE rownum <= 10
+
+        2번 방법 FETCH FIRST
+                INSERT INTO popular_board(board_id, ranking, updated_at)
+                SELECT id, ROW_NUMBER() OVER(ORDER BY view_count DESC) as ranking, current_timestamp
+                FROM board
+                ORDER BY view_count DESC
+                FETCH FIRST 10 Rows ONLY
+            rownum 의 복잡하고, 번거로운 코드를 간략하게 사용할 수 있는 추가 예약어 문법
+
+    useGeneratedKeys="true" keyProperty="id" keyColumn="id"
+    문제가 되진 않으나 써 주는 것이 좋다.
+    -->
     <!-- 조회수 기준 10개 게시글을 인기글로 등록 -->
-    <insert id="insertPopularBoards" parameterType="Board">
+    <insert id="insertPopularBoards" parameterType="Board" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO popular_board(board_id, ranking, updated_at)
-        SELECT
-            id, ROW_NUMBER() OVER(ORDER BY view_count DESC) as ranking, NOW()
+        SELECT id, ROW_NUMBER() OVER(ORDER BY view_count DESC) as ranking, current_timestamp
         FROM board
-        ORDER BY view_count DESC
-        LIMIT 10
+        ORDER BY view_count DESC NULLS LAST
+        FETCH FIRST 10 Rows ONLY
     </insert>
 
     <!-- 인기글 목록 조회 -->
@@ -22,7 +48,7 @@
             b.id, b.title, b.content, b.view_count, b.created_at, b.updated_at, p.ranking, p.updated_at
         FROM popular_board p
         JOIN board b ON board_id = b.id
-        ORDER BY p.ranking ASC
+        ORDER BY p.ranking ASC NULLS LAST
     </select>
 
     <!-- 인기 게시글 삭제 -->
