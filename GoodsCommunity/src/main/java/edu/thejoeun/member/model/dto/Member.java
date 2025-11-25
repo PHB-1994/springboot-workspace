@@ -14,6 +14,6 @@ public class Member {
     private String memberEmail;
     private String memberPassword;
     private String memberRole;
-    private String memberCreateAt;
-    private String memberUpdateAt;
+    private String memberCreatedAt;
+    private String memberUpdatedAt;
 }
