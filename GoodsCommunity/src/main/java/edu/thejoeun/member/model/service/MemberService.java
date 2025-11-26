@@ -1,6 +1,9 @@
 package edu.thejoeun.member.model.service;
 
 import edu.thejoeun.member.model.dto.Member;
+import jakarta.servlet.http.HttpSession;
+
+import java.util.Map;
 
 public interface MemberService {
 
@@ -10,4 +13,6 @@ public interface MemberService {
     Member login(String memberEmail, String memberPassword);
 
     void saveMember(Member member);
+
+    Map<String, Object> updateMember(Member member, String currentPassword, HttpSession session);
 }

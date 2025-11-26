@@ -3,6 +3,7 @@ package edu.thejoeun.member.model.service;
 import edu.thejoeun.member.model.dto.Member;
 import edu.thejoeun.member.model.mapper.EmailMapper;
 import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -16,23 +17,23 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Transactional // 예외 발생하면 롤백할게 (기본값으로 커밋)
 @Slf4j
+@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService{
 
-    @Autowired // EmailConfig 에 설정된 메일보내기 기능과 관련 환경설정 사용
-    private JavaMailSender mailSender;
+    // EmailConfig 에 설정된 메일보내기 기능과 관련 환경설정 사용
+    private final JavaMailSender mailSender;
 
-    @Autowired
-    private MailSender emailSender;
+    // 템플릿 엔진 이용해서 auth/signup.html 에 있는 html 코드를 java 로 변환
+    private final SpringTemplateEngine templateEngine;
 
-    @Autowired // 템플릿 엔진 이용해서 auth/signup.html 에 있는 html 코드를 java 로 변환
-    private SpringTemplateEngine templateEngine;
+    Map<String, String> authKeyStorage = new ConcurrentHashMap<>();
 
-    @Autowired
-    private EmailMapper emailMapper;
+
 
     // 이메일 보내기
     @Override
@@ -67,30 +68,14 @@ public class EmailServiceImpl implements EmailService{
             // 모든 준비가 끝나면 진짜로 메일보내기~!
             mailSender.send(mimeMessage); // 이메일 발송
 
+            authKeyStorage.put(email,authKey);
+            log.info("인증키 메모리 저장 완료 - 이메일 : {}", email);
+
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
 
-        // 이메일 + 인증 번호를 "TB_AUTH_KEY" 테이블에 저장
-        // map 이름에 key-value 형태로 "인증키" : 6자리, "email" : 인증번호 받은 사람의 이메일
-        // 형태로 잠시 자바에서 보관
-        Map<String, String> map = new HashMap<>();
-        map.put("authKey",authKey);
-        map.put("email",email);
-
-        // 이전에 해당 이메일로 인증키를 발송한 기록이 있다면 키를 갱신
-        int result = emailMapper.updateAuthKey(map); // 발송한 기록이 없으면 0 이 result 담겨질 것
-
-        if(result == 0){ // 이전에 인증키를 보낸 적이 없음
-            result = emailMapper.insertAuthKey(map); // 새로운 인증키 기록을 삽입하는 메퍼 메소드 호출
-            // 이메일에서 인증키를 무사히 보냈다면 result 에는 1 이 담길 것
-        }
-
-        // 둘다 실패하여 최종 result 가 0 이라면 null 반환
-        if(result == 0){
-            return null;
-        }
         // 이메일 발송 & 인증키 잠시 보관을 모두 성공하면 생성된 인증키를 반환
         return authKey;
         /*
@@ -187,8 +172,23 @@ public class EmailServiceImpl implements EmailService{
     // 이메일, 인증번호 확인
     @Override
     public int checkAuthKey(Map<String, Object> map) {
-        log.info("service map data : {}", map);
-        return emailMapper.checkAuthKey(map);
+        String email = (String) map.get("email");
+        String inputAuthKey = (String) map.get("authKey");
+        log.info("인증키 확인 - 이메일 : {}", email);
+        String storedAuthKey = authKeyStorage.get(email);
+
+        if(storedAuthKey == null){
+            log.warn("저장된 인증키 없음 - 이메일 : {}", email);
+            return 0;
+        }
+
+        if(storedAuthKey != null && storedAuthKey.equals(inputAuthKey)){
+            log.info("인증 성공");
+            authKeyStorage.remove(email); // 인증 후 삭제
+            return 1;
+        }
+        log.warn("인증 실패");
+        return 0;
     }
 
 }
