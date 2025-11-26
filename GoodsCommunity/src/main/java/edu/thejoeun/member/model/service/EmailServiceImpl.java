@@ -31,7 +31,7 @@ public class EmailServiceImpl implements EmailService{
     // 템플릿 엔진 이용해서 auth/signup.html 에 있는 html 코드를 java 로 변환
     private final SpringTemplateEngine templateEngine;
 
-    Map<String, String> authKeyStorage = new ConcurrentHashMap<>();
+    private final Map<String, String> authKeyStorage = new ConcurrentHashMap<>();
 
 
 
