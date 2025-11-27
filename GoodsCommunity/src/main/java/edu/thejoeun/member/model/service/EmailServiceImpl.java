@@ -38,7 +38,8 @@ public class EmailServiceImpl implements EmailService{
     // 이메일 보내기
     @Override
     public String sendMail(String htmlName, String email) {
-
+        // 이메일 정제 (정리하여 제공)
+        email = email.trim().replaceAll("^\"|\"$","");
         // 6자리 난수 코드 생성하는 기능 불러오기
         String authKey = createAuthKey();
 
@@ -58,7 +59,8 @@ public class EmailServiceImpl implements EmailService{
             // mailSender 객체를 이용해서 이메일 본문을 쉽게 설정할 수 있도록 도와줌
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,true,"utf-8");
             helper.setTo(email);    // 이메일 받을 사람 지정
-            helper.setFrom(email);  // 이메일 제목 지정
+           // helper.setFrom(email);  // 이메일 제목 지정
+            helper.setSubject(제목);
             helper.setText(loadHtml(authKey,htmlName),true);
             // 이메일 본문 인증키 + 회사에서 인증키를 보냈다는 신뢰의 본문 내용. true 는 html 형식이 맞다
             // 메일에 이미지 첨부. 파일 첨부랑 살짝 다름
@@ -172,7 +174,8 @@ public class EmailServiceImpl implements EmailService{
     // 이메일, 인증번호 확인
     @Override
     public int checkAuthKey(Map<String, Object> map) {
-        String email = (String) map.get("email");
+        // String email = (String) map.get("email"); -> 공백과 "" String 형태의 문자열까지 포함하여 가져옴
+        String email = ((String) map.get("email")).trim().replaceAll("^\"|\"$","");
         String inputAuthKey = (String) map.get("authKey");
         log.info("인증키 확인 - 이메일 : {}", email);
         String storedAuthKey = authKeyStorage.get(email);

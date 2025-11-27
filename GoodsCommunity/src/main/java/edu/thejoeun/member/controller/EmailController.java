@@ -29,13 +29,14 @@ public class EmailController {
         // 이메일 보내기 실패
         return 0;
     }
+
     /**
      * 입력된 인증번호와 Session 에 저장되어 있는 인증번호를 비교
      * @param map 전달 받은 JSON 에 -> Map 형태로 변경해서 저장
      * @return 인증여부 일치 여부가 0, 1 로 반환될 것
      */
     @PostMapping("/checkAuthKey") // api : email/checkAuthKey
-    public int checkAuthKey(Map<String, Object> map) {
+    public int checkAuthKey(@RequestBody Map<String, Object> map) {
         log.info("인증키 번호 : {}", map);
         // 입력받은 이메일, 인증번호가 있는지 조회
         // 이메일 있고, 인증번호 일치 == 1 일치하지 않으면 0 이 나올 것
