@@ -171,4 +171,11 @@ public class MemberServiceImpl implements MemberService {
 
         return res;
     }
+
+    @Transactional
+    @Override
+    public void updateProfileImage(String memberEmail, String memberProfileImage) {
+        memberMapper.updateProfileImage(memberEmail, memberProfileImage);
+        log.info("프로필 이미지 DB 업데이트 완료 - 이메일 {}, 프로필이미지 : {}", memberEmail, memberProfileImage);
+    }
 }
