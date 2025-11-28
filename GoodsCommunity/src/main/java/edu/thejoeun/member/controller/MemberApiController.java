@@ -79,6 +79,17 @@ public class MemberApiController {
         }
     }
 
+    /**
+     * 상품 이미지 업로드를 프로필 사진 업로드처럼 product-images 폴더에 업데이트 되도록 설정
+     * -> 이미지 업로드 한 데이터 가져오고 가져가는 서버 - 웹 페이지 작업]
+     * -> updateProduct 로!
+     * 과제...! .. Docs 로 공부 추천..!
+     * fetchMypageEditWithProfile(axios, formData, profileFile, navigate, setIsSubmitting);
+     * 받기 위한 매개변수 수정 일어날 것
+     * @param updateData
+     * @param session
+     * @return
+     */
     @PutMapping("/update")
     public Map<String, Object> updateMypage(@RequestBody Map<String, Object> updateData, HttpSession session)  {
         log.info("회원정보 수정 요청");

@@ -57,10 +57,10 @@ public class WebConfig implements WebMvcConfigurer {
         게시물 이미지 폴더
         registry.addResourceHandler("/profile_images/**")
                 .addResourceLocations("file:" + fileUploadPath + "/"); // 폴더 명칭뒤에 바로 이미지명칭 붙어서 에러 발생
-
-        상품 이미지 폴더
-        registry.addResourceHandler("/profile_images/**")
+        */
+        // 상품 이미지 폴더
+        registry.addResourceHandler("/product_images/**")
                 .addResourceLocations("file:" + fileUploadPath + "/"); // 폴더 명칭뒤에 바로 이미지명칭 붙어서 에러 발생
-         */
+
     }
 }
