@@ -76,9 +76,10 @@ public class FileUploadService {
             throw new IOException("파일 저장에 실패했습니다. : " + e.getMessage());
         }
 
-        // DB 에서 저장할 상대 경로 반환 (웹에서 접근 가능한 경로) -- / 붙여야 하지 않나..? 그리고 파일이 아닌 폴더를 반환하는게..?
-        return "/profile_images" + 하나_밖에_없는_파일이름;
+        // DB 에서 저장할 상대 경로 반환 (웹에서 접근 가능한 경로) -- / 붙여야 하지 않나..? => 붙여야함 그리고 파일이 아닌 폴더를 반환하는게..?  => 맨 마지막 폴더에 파일을 추가한다고 생각하면 됨
+        return "/profile_images/" + 하나_밖에_없는_파일이름;
     }
+
 
 
 }

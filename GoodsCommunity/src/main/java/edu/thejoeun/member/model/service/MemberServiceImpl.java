@@ -1,25 +1,35 @@
 package edu.thejoeun.member.model.service;
 
 
+import edu.thejoeun.common.exception.ForbiddenExceptions;
+import edu.thejoeun.common.exception.UnauthorizedException;
+import edu.thejoeun.common.util.FileUploadService;
 import edu.thejoeun.common.util.SessionUtil;
 import edu.thejoeun.member.model.dto.Member;
 import edu.thejoeun.member.model.mapper.MemberMapper;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
-    @Autowired
-    private MemberMapper memberMapper;
+
+    private final MemberMapper memberMapper;
+    private final FileUploadService fileUploadService;
 
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
@@ -123,7 +133,7 @@ public class MemberServiceImpl implements MemberService {
         try {
             // 현재 로그인된 사용자 정보 가져오기
             Member loginUser = SessionUtil.getLoginUser(session);
-            if(loginUser == null){
+            if (loginUser == null) {
                 res.put("success", false);
                 res.put("message", "로그인이 필요합니다.");
                 return res;
@@ -132,16 +142,16 @@ public class MemberServiceImpl implements MemberService {
             Member m = memberMapper.getMemberByEmail(member.getMemberEmail());
             // id where 조건으로 / 현재 비밀번호와 비밀번호 변경할 때 작성한 현재 비밀번호가 일치하는지 확인
             // 비밀번호 변경하는 경우
-            if(currentPassword != null && !currentPassword.isEmpty()){
+            if (currentPassword != null && !currentPassword.isEmpty()) {
                 // 현재 비밀번호와 DB 에 저장된 비밀번호가 일치하는지 확인
-                if(!bCryptPasswordEncoder.matches(currentPassword, m.getMemberPassword())) {
+                if (!bCryptPasswordEncoder.matches(currentPassword, m.getMemberPassword())) {
                     res.put("success", false);
                     res.put("message", "wrongPassword");
                     log.warn("비밀번호 불일치 - 이메일 : {}", loginUser.getMemberEmail());
                 }
 
                 // 새 비밀번호 암호화 처리해서 저장할 수 있도록 로직 작성
-                if(member.getMemberPassword() != null && !member.getMemberPassword().isEmpty()){
+                if (member.getMemberPassword() != null && !member.getMemberPassword().isEmpty()) {
                     String encodePw = bCryptPasswordEncoder.encode(m.getMemberPassword());
                     m.setMemberPassword(encodePw);
                 }
@@ -163,19 +173,69 @@ public class MemberServiceImpl implements MemberService {
             res.put("message", "success");
             log.info("회원정보 수정 공성 - 이메일 : {}", loginUser.getMemberEmail());
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             res.put("success", false);
             res.put("message", "회원정보 수정 중 오류가 발생했습니다.");
-            log.info("회원정보 수정 실패 - 에러 {}",e.getMessage());
+            log.info("회원정보 수정 실패 - 에러 {}", e.getMessage());
         }
 
         return res;
     }
 
+    // 클라이언트 측에서 발생하는 문제를 이중으로 보안하기도 하고,
+    // 개발 해커 블랙클라이언트로부터 회사 서비스를 보호하기 위한 예외 차단 처리
     @Transactional
     @Override
-    public void updateProfileImage(String memberEmail, String memberProfileImage) {
-        memberMapper.updateProfileImage(memberEmail, memberProfileImage);
-        log.info("프로필 이미지 DB 업데이트 완료 - 이메일 {}, 프로필이미지 : {}", memberEmail, memberProfileImage);
+    public String updateProfileImage(Member loginUser, String memberEmail, MultipartFile file, HttpSession session) throws IOException {
+
+        // UnauthorizedException = IllegalStateException
+        if (loginUser == null) {
+            throw new UnauthorizedException("로그인이 필요합니다.");
+        }
+
+        // ForbiddenExceptions = SecurityException
+        // 본인 확인
+        if (!loginUser.getMemberEmail().equals(memberEmail)) {
+            throw new ForbiddenExceptions("본인의 프로필만 수정할 수 있습니다.");
+        }
+
+        // 파일 유효성 검증
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("파일이 비어있습니다.");
+        }
+
+        // 이미지 파일인지 확인
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new IllegalArgumentException("이미지 파일만 업로드 가능합니다.");
+        }
+
+        if (file.getSize() > 5 * 1024 * 1024) {
+            throw new IllegalArgumentException("파일 크기는 5MB를 초과할 수 없습니다.");
+        }
+
+        // 기존 프로필 이미지 삭제
+        if (loginUser.getMemberProfileImage() != null) {
+            // 삭제 관련 기능 FileUploadService 에서 작성 후 기능 추가
+        }
+
+        // 새 이미지 업로드
+        // memberProfileImage 을 넣어주어야함 setImageUrl 사용
+        // file ->
+        String imageUrl = fileUploadService.uploadProfileImage(file);
+
+        // DB 업데이트
+        // 중간에 작동하기 전에 상태 확인 후 작동
+        // 세션 업데이트
+        loginUser.setMemberProfileImage(imageUrl);
+        SessionUtil.setLoginUser(session, loginUser);
+
+        memberMapper.updateProfileImage(memberEmail, imageUrl);
+
+        log.info("프로필 이미지 DB 업데이트 완료 - 이메일 {}, 프로필이미지 : {}", memberEmail, imageUrl);
+
+        return imageUrl;
+
     }
+
 }

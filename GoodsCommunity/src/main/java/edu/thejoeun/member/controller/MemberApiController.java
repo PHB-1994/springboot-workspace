@@ -1,5 +1,6 @@
 package edu.thejoeun.member.controller;
 
+import edu.thejoeun.common.exception.ForbiddenExceptions;
 import edu.thejoeun.common.util.FileUploadService;
 import edu.thejoeun.common.util.SessionUtil;
 import edu.thejoeun.member.model.dto.Member;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -111,8 +113,9 @@ public class MemberApiController {
 
     }
 
+    // 요청을 받아서 Service 로 넘기고 결과를 응답하는 역할만 함
     @PostMapping("/profile-image")
-    public Map<String, Object> uploadProfileImage(
+    public ResponseEntity<Map<String, Object>> uploadProfileImage(
             @RequestParam("file")MultipartFile file,
             @RequestParam("memberEmail")String memberEmail, HttpSession session) {
 
@@ -120,75 +123,42 @@ public class MemberApiController {
 
         try {
             Member loginUser = SessionUtil.getLoginUser(session);
-            if(loginUser == null){
-                res.put("success", false);
-                res.put("message", "로그인이 필요합니다.");
-                return res;
-                // ResponseEntity 401
-            }
-
-            // 본인 확인
-            if(!loginUser.getMemberEmail().equals(memberEmail)){
-                res.put("success", false);
-                res.put("message", "본인의 프로필만 수정할 수 있습니다.");
-                return res;
-                // ResponseEntity 403
-            }
-
-            // 파일 유효성 검증
-            if(file.isEmpty()){
-                res.put("success", false);
-                res.put("message", "파일이 비어있습니다.");
-                return res;
-                // ResponseEntity badRequest = 클라이언트가 하지 말라는 행동 함
-            }
-
-            // 이미지 파일인지 확인
-            String contentType = file.getContentType();
-            if(contentType == null || !contentType.startsWith("image/")){
-                res.put("success", false);
-                res.put("message", "파일 이미지만 업로드 가능합니다.");
-                return res;
-                // ResponseEntity badRequest = 클라이언트가 하지 말라는 행동 함
-            }
-
-            if(file.getSize() > 5 * 1024 * 1024) {
-                res.put("success", false);
-                res.put("message", "파일 크기는 5MB를 초과할 수 없습니다.");
-                return res;
-                // ResponseEntity badRequest = 클라이언트가 하지 말라는 행동 함
-            }
-
-            // 기존 프로필 이미지 삭제
-            if(loginUser.getMemberProfileImage() != null) {
-                // 삭제 관련 기능 FileUploadService 에서 작성 후 기능 추가
-            }
-
-            // 새 이미지 업로드
-            String imageUrl = fileUploadService.uploadProfileImage(file);
-
-            // DB 업데이트
-            memberService.updateProfileImage(memberEmail, imageUrl);
-
-            // 세션 업데이트
-            loginUser.setMemberProfileImage(imageUrl);
-            SessionUtil.setLoginUser(session, loginUser);
+            String imageUrl = memberService.updateProfileImage(loginUser, memberEmail, file, session);
 
             res.put("success", true);
             res.put("message", "프로필 이미지가 업데이트 되었습니다.");
             res.put("imageUrl", imageUrl);
-
-
             log.info("프로필 이미지 업로드 성공 - 이메일 : {}, 파일명 : {}", memberEmail, file.getOriginalFilename() );
-            return res;
+            return ResponseEntity.ok(res); // 업데이트가 무사히 되면 200만 전달
+
+        // 개발자가 만든 exception 은 최 상위 작성
+        // 자바에서 기본으로 제공하는 exception 은
+        // 최 상위가 아닌 순부터 작성
+        // exception 의 부모인 exception 은 맨 마지막에 작성
+        // 부모 exception 은 까지 올 때는
+        // 어떤 문제인지 파악을 회사에서 못한 상태
+        } catch(IllegalStateException e) {
+            res.put("success", false);
+            res.put("message", e.getMessage());
+            return ResponseEntity.status(401).body(res);
+            // ResponseEntity 401
+
+        } catch(ForbiddenExceptions e) {
+            res.put("success", false);
+            res.put("message", e.getMessage());
+            return ResponseEntity.status(403).body(res);
+
+        } catch(IllegalArgumentException e) {
+            res.put("success", false);
+            res.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(res);
 
         } catch(Exception e) {
             log.error("프로필 이미지 업로드 실패 - 이메일 : {}, 오류 : {}", memberEmail, e.getMessage());
             res.put("success", false);
-            res.put("message", "프로필 이미지 업로드 중 오류가 발생했습니다.");
-            return res;
+            res.put("message", "서버 오류가 발생했습니다.");
+            return ResponseEntity.status(500).body(res);
             // 500 error - 백엔드 에러
-
         }
 
     }

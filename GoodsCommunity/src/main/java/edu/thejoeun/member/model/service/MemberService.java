@@ -1,8 +1,11 @@
 package edu.thejoeun.member.model.service;
 
+import edu.thejoeun.common.util.SessionUtil;
 import edu.thejoeun.member.model.dto.Member;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 
 public interface MemberService {
@@ -16,5 +19,5 @@ public interface MemberService {
 
     Map<String, Object> updateMember(Member member, String currentPassword, HttpSession session);
 
-    void updateProfileImage(String memberEmail, String memberProfileImage);
+    String updateProfileImage(Member loginUser, String memberEmail, MultipartFile file, HttpSession session) throws IOException;
 }
