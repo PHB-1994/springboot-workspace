@@ -12,8 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -109,7 +111,85 @@ public class MemberApiController {
 
     }
 
-    public void uploadProfileImage() {
+    @PostMapping("/profile-image")
+    public Map<String, Object> uploadProfileImage(
+            @RequestParam("file")MultipartFile file,
+            @RequestParam("memberEmail")String memberEmail, HttpSession session) {
+
+        Map<String, Object> res = new HashMap<>();
+
+        try {
+            Member loginUser = SessionUtil.getLoginUser(session);
+            if(loginUser == null){
+                res.put("success", false);
+                res.put("message", "로그인이 필요합니다.");
+                return res;
+                // ResponseEntity 401
+            }
+
+            // 본인 확인
+            if(!loginUser.getMemberEmail().equals(memberEmail)){
+                res.put("success", false);
+                res.put("message", "본인의 프로필만 수정할 수 있습니다.");
+                return res;
+                // ResponseEntity 403
+            }
+
+            // 파일 유효성 검증
+            if(file.isEmpty()){
+                res.put("success", false);
+                res.put("message", "파일이 비어있습니다.");
+                return res;
+                // ResponseEntity badRequest = 클라이언트가 하지 말라는 행동 함
+            }
+
+            // 이미지 파일인지 확인
+            String contentType = file.getContentType();
+            if(contentType == null || !contentType.startsWith("image/")){
+                res.put("success", false);
+                res.put("message", "파일 이미지만 업로드 가능합니다.");
+                return res;
+                // ResponseEntity badRequest = 클라이언트가 하지 말라는 행동 함
+            }
+
+            if(file.getSize() > 5 * 1024 * 1024) {
+                res.put("success", false);
+                res.put("message", "파일 크기는 5MB를 초과할 수 없습니다.");
+                return res;
+                // ResponseEntity badRequest = 클라이언트가 하지 말라는 행동 함
+            }
+
+            // 기존 프로필 이미지 삭제
+            if(loginUser.getMemberProfileImage() != null) {
+                // 삭제 관련 기능 FileUploadService 에서 작성 후 기능 추가
+            }
+
+            // 새 이미지 업로드
+            String imageUrl = fileUploadService.uploadProfileImage(file);
+
+            // DB 업데이트
+            memberService.updateProfileImage(memberEmail, imageUrl);
+
+            // 세션 업데이트
+            loginUser.setMemberProfileImage(imageUrl);
+            SessionUtil.setLoginUser(session, loginUser);
+
+            res.put("success", true);
+            res.put("message", "프로필 이미지가 업데이트 되었습니다.");
+            res.put("imageUrl", imageUrl);
+
+
+            log.info("프로필 이미지 업로드 성공 - 이메일 : {}, 파일명 : {}", memberEmail, file.getOriginalFilename() );
+            return res;
+
+        } catch(Exception e) {
+            log.error("프로필 이미지 업로드 실패 - 이메일 : {}, 오류 : {}", memberEmail, e.getMessage());
+            res.put("success", false);
+            res.put("message", "프로필 이미지 업로드 중 오류가 발생했습니다.");
+            return res;
+            // 500 error - 백엔드 에러
+
+        }
 
     }
 }

@@ -34,10 +34,10 @@
 
     <!-- 프로필 이미지만 업데이트 -->
     <!-- id가 아닌 email 로 받는 이유는 email 또한 고유값이기 때문에 상관이 없어서 ok
-    parameterType 은?? 써주는 것이 좋다. -->
+    parameterType 은?? => 써주는 것이 좋다. -->
     <update id="updateProfileImage">
         UPDATE member
-        SET member_profile_image = #{memberProfileImage},
+        SET member_profile_image = #{memberProfileImage}
         WHERE member_email = #{memberEmail}
     </update>
 </mapper>

@@ -62,7 +62,7 @@ public class FileUploadService {
 
         // 고유한 파일명 생성 (UUID 사용) uniqueFileName = 하나_밖에_없는_파일이름
         String 하나_밖에_없는_파일이름 = UUID.randomUUID().toString() + 확장자;
-        
+
         // filePath = 파일저장될경로  프로필사진이 위치할 폴더   +   폴더 내에서 겹칠 일이 없는 파일명칭
         Path 파일저장될경로 = Paths.get(   uploadPath,                   하나_밖에_없는_파일이름);
 
