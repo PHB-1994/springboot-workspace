@@ -72,12 +72,19 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .maximumSessions(1) // 동시 세션 1개만 허용
                         .maxSessionsPreventsLogin(false) // 새 로그인 시 기존 세션 무효화
-                )
+                );
 
+                /*
+                SecurityConfig 는 모든 api 경로에서 최 우선의 권한을 가지고 있다.
+                MemberAPIController 에서 작동해야하는 로그아웃 경로를
+                시큐리티가 가로챔
+                MemberAPIController 로그아웃이 동작하지 않는다.
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")
                         .permitAll()
                 );
+                 */
+
 
         return http.build();
     }
