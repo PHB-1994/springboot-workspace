@@ -129,7 +129,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Map<String, Object> updateMember(Member member, String currentPassword, HttpSession session) {
         Map<String, Object> res = new HashMap<>();
-
         try {
             // 현재 로그인된 사용자 정보 가져오기
             Member loginUser = SessionUtil.getLoginUser(session);
@@ -155,15 +154,12 @@ public class MemberServiceImpl implements MemberService {
                     String encodePw = bCryptPasswordEncoder.encode(m.getMemberPassword());
                     m.setMemberPassword(encodePw);
                 }
-
             } else {
                 // 비밀번호 변경하지 않은 경우 기존 비밀번호 유지
-                m.setMemberPassword(m.getMemberPassword());
+                member.setMemberPassword(m.getMemberPassword());
             }
-
             member.setMemberId(m.getMemberId());
             memberMapper.updateMember(member);
-
             // 수정된 DB 내역으로 session 업데이트
             Member updatemember = memberMapper.getMemberByEmail(member.getMemberEmail());
             updatemember.setMemberPassword(null);
@@ -171,7 +167,7 @@ public class MemberServiceImpl implements MemberService {
 
             res.put("success", true);
             res.put("message", "success");
-            log.info("회원정보 수정 공성 - 이메일 : {}", loginUser.getMemberEmail());
+            log.info("회원정보 수정 성공 - 이메일 : {}", loginUser.getMemberEmail());
 
         } catch (Exception e) {
             res.put("success", false);
