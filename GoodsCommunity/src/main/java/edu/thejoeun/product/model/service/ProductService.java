@@ -1,7 +1,11 @@
 package edu.thejoeun.product.model.service;
 
+import edu.thejoeun.member.model.dto.Member;
 import edu.thejoeun.product.model.dto.Product;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ProductService {
@@ -37,4 +41,6 @@ public interface ProductService {
     // 재고 업데이트
     void updateStock(int id, int quantity);
 
+    // 아래 내용이 추가한것!
+    String updateProductImage(Member loginUser, String productName, MultipartFile file, HttpSession session) throws IOException;
 }

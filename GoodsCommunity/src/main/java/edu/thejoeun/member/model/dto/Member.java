@@ -14,6 +14,8 @@ public class Member {
     private String memberEmail;
     private String memberPassword;
     private String memberAddress;
+    private String memberPostCode;
+    private String memberDetailAddress;
     private String memberPhone;
     private String memberProfileImage; // 프로필 이미지 경로 추가
     private String memberRole;

@@ -112,9 +112,11 @@ public class MemberApiController {
             m.setMemberEmail(updateData.get("memberEmail").toString());
             m. setMemberName(updateData.get("memberName").toString());
             m. setMemberAddress(updateData.get("memberAddress").toString());
+            m. setMemberPostCode(updateData.get("memberPostCode").toString());
+            m. setMemberDetailAddress(updateData.get("memberDetailAddress").toString());
 
             // 새 비밀번호가 있는 경우
-            String newPassword = (String) updateData.get("memberPassword");
+            String newPassword = (String) updateData.get("newPassword");
             if(newPassword != null && !newPassword.isEmpty()) {
                m.setMemberPassword(newPassword);
             }

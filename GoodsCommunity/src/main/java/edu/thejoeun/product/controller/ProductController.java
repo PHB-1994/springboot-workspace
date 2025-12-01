@@ -1,13 +1,18 @@
 package edu.thejoeun.product.controller;
 
 
+import edu.thejoeun.common.exception.ForbiddenExceptions;
+import edu.thejoeun.common.util.SessionUtil;
+import edu.thejoeun.member.model.dto.Member;
 import edu.thejoeun.product.model.dto.Product;
 import edu.thejoeun.product.model.service.ProductService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -207,5 +212,55 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
 
         }
+    }
+
+    // 아래 내용이 추가한것!
+    @PostMapping("/product-image")
+    public ResponseEntity<Map<String, Object>> uploadProductImage(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("productName")String productName, HttpSession session) {
+
+        Map<String, Object> res = new HashMap<>();
+
+        try {
+            Member loginUser = SessionUtil.getLoginUser(session);
+            String imageUrl = productService.updateProductImage(loginUser, productName, file, session);
+
+            res.put("success", true);
+            res.put("message", "제품 이미지가 업데이트 되었습니다.");
+            res.put("imageUrl", imageUrl);
+            log.info("제품 이미지 업로드 성공 - 제품명 : {}, 파일명 : {}", productName, file.getOriginalFilename() );
+            return ResponseEntity.ok(res); // 업데이트가 무사히 되면 200만 전달
+
+            // 개발자가 만든 exception 은 최 상위 작성
+            // 자바에서 기본으로 제공하는 exception 은
+            // 최 상위가 아닌 순부터 작성
+            // exception 의 부모인 exception 은 맨 마지막에 작성
+            // 부모 exception 은 까지 올 때는
+            // 어떤 문제인지 파악을 회사에서 못한 상태
+        } catch(IllegalStateException e) {
+            res.put("success", false);
+            res.put("message", e.getMessage());
+            return ResponseEntity.status(401).body(res);
+            // ResponseEntity 401
+
+        } catch(ForbiddenExceptions e) {
+            res.put("success", false);
+            res.put("message", e.getMessage());
+            return ResponseEntity.status(403).body(res);
+
+        } catch(IllegalArgumentException e) {
+            res.put("success", false);
+            res.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(res);
+
+        } catch(Exception e) {
+            log.error("프로필 이미지 업로드 실패 - 이메일 : {}, 오류 : {}", productName, e.getMessage());
+            res.put("success", false);
+            res.put("message", "서버 오류가 발생했습니다.");
+            return ResponseEntity.status(500).body(res);
+            // 500 error - 백엔드 에러
+        }
+
     }
 }

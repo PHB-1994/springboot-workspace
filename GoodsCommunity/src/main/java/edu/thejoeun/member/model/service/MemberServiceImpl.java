@@ -115,6 +115,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Transactional
+    @Override
     public void saveMember(Member member, MultipartFile profileImage) {
 
         try {
@@ -138,7 +139,7 @@ public class MemberServiceImpl implements MemberService {
             member.setMemberProfileImage(imageUrl);
             log.info("프로필 이미지 업로드 완료 : {}", imageUrl);
 
-            } else {
+            } else {// 한 번 더 처리 // 재활용할 수 있도록 설정하지 않는 한 모든 경우의 수를 대비해야함
                 member.setMemberProfileImage(null);
                 log.info("기본 프로필 이미지로 설정");
             }

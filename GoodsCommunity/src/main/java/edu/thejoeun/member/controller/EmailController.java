@@ -19,7 +19,8 @@ public class EmailController {
     private final EmailService emailService; // 다른 사람이 조작하지 못하도록 final 설정
 
     @PostMapping("/signup") // api : email/signup
-    public int signup(@RequestBody String email){
+    public int signup(@RequestBody Map<String, String> map){
+        String email = map.get("email");
         String authKey = emailService.sendMail("signup", email);
 
         if(authKey != null){ // 인증번호가 반환되서 돌아옴

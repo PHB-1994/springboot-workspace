@@ -1,13 +1,21 @@
 package edu.thejoeun.product.model.service;
 
 
+import edu.thejoeun.common.exception.ForbiddenExceptions;
+import edu.thejoeun.common.exception.UnauthorizedException;
+import edu.thejoeun.common.util.FileUploadService;
+import edu.thejoeun.common.util.SessionUtil;
+import edu.thejoeun.member.model.dto.Member;
 import edu.thejoeun.product.model.dto.Product;
 import edu.thejoeun.product.model.mapper.ProductMapper;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -16,7 +24,7 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductMapper productMapper;
-
+    private final FileUploadService fileUploadService;
     /*
      public List<Product> getAllProducts() {
      log.info("전체 상품 조회 : {}".);
@@ -179,5 +187,57 @@ public class ProductServiceImpl implements ProductService {
             log.error("재고 업데이트 실패  - ID : {}", id);
             throw  new RuntimeException("재고 업데이트에 실패했습니다.");
         }
+    }
+
+    // 아래 내용이 추가한것!
+    @Override
+    public String updateProductImage(Member loginUser, String productName, MultipartFile file, HttpSession session) throws IOException {
+        // UnauthorizedException = IllegalStateException
+        if (loginUser == null) {
+            throw new UnauthorizedException("로그인이 필요합니다.");
+        }
+
+        // ForbiddenExceptions = SecurityException
+        // 본인 확인
+        if (!loginUser.getMemberEmail().equals(productName)) {
+            throw new ForbiddenExceptions("본인의 프로필만 수정할 수 있습니다.");
+        }
+
+        // 파일 유효성 검증
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("파일이 비어있습니다.");
+        }
+
+        // 이미지 파일인지 확인
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new IllegalArgumentException("이미지 파일만 업로드 가능합니다.");
+        }
+
+        if (file.getSize() > 5 * 1024 * 1024) {
+            throw new IllegalArgumentException("파일 크기는 5MB를 초과할 수 없습니다.");
+        }
+
+        // 기존 프로필 이미지 삭제
+        if (loginUser.getMemberProfileImage() != null) {
+            // 삭제 관련 기능 FileUploadService 에서 작성 후 기능 추가
+        }
+
+        // 새 이미지 업로드
+        // memberProfileImage 을 넣어주어야함 setImageUrl 사용
+        // file ->
+        String imageUrl = fileUploadService.uploadProfileImage(file);
+
+        // DB 업데이트
+        // 중간에 작동하기 전에 상태 확인 후 작동
+        // 세션 업데이트
+        loginUser.setMemberProfileImage(imageUrl);
+        SessionUtil.setLoginUser(session, loginUser);
+
+        productMapper.updateProductImage(productName, imageUrl);
+
+        log.info("프로필 이미지 DB 업데이트 완료 - 이메일 {}, 프로필이미지 : {}", productName, imageUrl);
+
+        return imageUrl;
     }
 }
