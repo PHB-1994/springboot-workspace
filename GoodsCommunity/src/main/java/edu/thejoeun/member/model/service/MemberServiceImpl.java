@@ -115,7 +115,39 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Transactional
-    public void saveMember(Member member) {
+    public void saveMember(Member member, MultipartFile profileImage) {
+
+        try {
+            // 파일 유효성 검증
+            if (profileImage != null && !profileImage.isEmpty()) {
+
+            // 이미지 파일인지 확인
+            String contentType = profileImage.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                throw new IllegalArgumentException("이미지 파일만 업로드 가능합니다.");
+            }
+
+            if (profileImage.getSize() > 5 * 1024 * 1024) {
+                throw new IllegalArgumentException("파일 크기는 5MB를 초과할 수 없습니다.");
+            }
+
+            // 새 이미지 업로드
+            // memberProfileImage 을 넣어주어야함 setImageUrl 사용
+            // file ->
+            String imageUrl = fileUploadService.uploadProfileImage(profileImage);
+            member.setMemberProfileImage(imageUrl);
+            log.info("프로필 이미지 업로드 완료 : {}", imageUrl);
+
+            } else {
+                member.setMemberProfileImage(null);
+                log.info("기본 프로필 이미지로 설정");
+            }
+
+        } catch(Exception err) {
+            log.error("회원가입 중 오류 발생 : {}", err.getMessage());
+        }
+
+
         String originPw = member.getMemberPassword(); // 기존 클라이언트 비밀번호 가져오기
         String encodePw = bCryptPasswordEncoder.encode(originPw); // 비밀번호 암호화
         member.setMemberPassword(encodePw); // 암호화처리된 비밀번호로 교체
