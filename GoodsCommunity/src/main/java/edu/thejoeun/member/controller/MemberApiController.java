@@ -73,6 +73,7 @@ public class MemberApiController {
      * 기본값은 true
      * @param member
      */
+    // @RequestPart 에 value 해가지고 () 형태로 데이터를 담고 진행해보자???
     @PostMapping("/signup")
     public void signup(@RequestPart Member member,
                        @RequestPart(required=false) MultipartFile profileImage) {

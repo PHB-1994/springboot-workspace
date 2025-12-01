@@ -170,6 +170,8 @@ public class MemberServiceImpl implements MemberService {
                 res.put("message", "로그인이 필요합니다.");
                 return res;
             }
+            log.info("member : ", member);
+            log.info("currentPassword : ", currentPassword);
             // DB 에서 최신 정보 가져오기
             Member m = memberMapper.getMemberByEmail(member.getMemberEmail());
             // id where 조건으로 / 현재 비밀번호와 비밀번호 변경할 때 작성한 현재 비밀번호가 일치하는지 확인
@@ -180,11 +182,16 @@ public class MemberServiceImpl implements MemberService {
                     res.put("success", false);
                     res.put("message", "wrongPassword");
                     log.warn("비밀번호 불일치 - 이메일 : {}", loginUser.getMemberEmail());
+
                 }
+
+                log.info("currentPassword : ", currentPassword);
 
                 // 새 비밀번호 암호화 처리해서 저장할 수 있도록 로직 작성
                 if (member.getMemberPassword() != null && !member.getMemberPassword().isEmpty()) {
-                    String encodePw = bCryptPasswordEncoder.encode(m.getMemberPassword());
+
+                    log.info("member.getMemberPassword() : ", member.getMemberPassword());
+                    String encodePw = bCryptPasswordEncoder.encode(member.getMemberPassword());
                     m.setMemberPassword(encodePw);
                 }
             } else {
