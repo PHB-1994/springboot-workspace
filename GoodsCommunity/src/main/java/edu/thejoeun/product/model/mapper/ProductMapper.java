@@ -40,9 +40,4 @@ public interface ProductMapper {
 
     // 재고 업데이트
     int updateStock(int id, int quantity);
-
-    // 아래 내용이 추가한것!
-    void updateProductImage(@Param("memberEmail")String productName,
-                            @Param("memberProfileImage")String imageUrl);
-
 }
