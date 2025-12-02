@@ -140,8 +140,17 @@ public class FileUploadService {
             log.info("업로드 디렉토리 생성 : {}", productFolder);
         }
 
+        // 과제 2 : 원본 파일명 그대로 사용하고 앞에 imageType 만 붙이기
+        String 클라이언트가_업로드한_파일이름 = file.getOriginalFilename();
+        if(클라이언트가_업로드한_파일이름 == null || 클라이언트가_업로드한_파일이름.isEmpty()){
+            throw new IOException("파일 이름이 유효하지 않습니다.");
+        }
+
         // 상품 가져오기
-        String fileName = imageType + get확장자메서드(file); // 파일 확장자 기능은 따로 만들어서 사용
+        // main - 클라이언트가 업로드한 파일 이름으로 저장하는 방법
+        String fileName = imageType + "-" +클라이언트가_업로드한_파일이름; // 파일 확장자 기능은 따로 만들어서 사용
+        // main.확장자명으로 저장되는 방법
+        // String fileName = imageType + get확장자메서드(file); // 파일 확장자 기능은 따로 만들어서 사용
 
         // DB 에서 저장할 상대 경로 반환
         Path 저장될_파일_경로 = Paths.get(productFolder,fileName);
@@ -155,7 +164,7 @@ public class FileUploadService {
             log.error("상품 이미지 저장 중 오류 발생 : ", e.getMessage());
         }
 
-        return "product_images" + productId + "/" + fileName;
+        return "/product_images/" + productId + "/" + fileName;
     }
 
 
