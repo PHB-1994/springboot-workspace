@@ -30,7 +30,7 @@ public interface ProductService {
     void = 등록데이터의 유무만 확인 가능 성공 / 실패
      */
     // 상품 등록
-    void insertProduct(Product product);
+    void insertProduct(Product product, MultipartFile imageFile);
 
     // 상품 수정
     void updateProduct(Product product);
@@ -40,7 +40,4 @@ public interface ProductService {
 
     // 재고 업데이트
     void updateStock(int id, int quantity);
-
-    // 아래 내용이 추가한것!
-    String updateProductImage(Member loginUser, String productName, MultipartFile file, HttpSession session) throws IOException;
 }

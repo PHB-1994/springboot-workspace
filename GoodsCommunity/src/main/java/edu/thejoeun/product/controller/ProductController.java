@@ -87,13 +87,38 @@ public class ProductController {
     }
 
 
+    /**
+     *
+     * @param product   @RequestPart() 내부에는 javascript 에서 지정한 변수이름과 required 형태를 지정하여 작성할 수 있다.
+     *                  만일 아무것도 작성하지 않을 경우에는 백엔드에서 사용하는 변수이름과 프론트엔드에서 사용하는 변수이름이 일치하고
+     *                  모든 데이터를 필수로 전달받는 변수명칭이라는 표기
+     *                  @RequestPart("prdct" required=false) Product product
+     *                  @RequestPart(value="prdct" required=false) Product product 위 아래 모두 동일한 형태
+     *                  위와 같은 경우에는 프론트엔드에서 변수이름이 prdct 이고, 필수로 데이터를 가져와 product 내부에 추가하지 않아도 될 때 사용하는 표기법
+     *
+     * @param imageFile 백엔드에서는 file 변수이름으로 imageFile 로 프론트엔드에서 가져온 데이터를 전달받을 것이며,
+     *                  데이터는 require = false 필수로 들어있지 않아도 된다.
+     *
+     * @return          성공 결과 유무를
+     *                      Map<  String    ,    Object   >
+     *                          "success"   : boolean 이나
+     *                          "message"   : "결과에 대한 메세지"
+     *                          "message" : "필요하다면 등록된 제품 아이디 숫자값"
+     *                          으로 프론트엔드에 반환할 것이다.
+     *                          프론트엔드에서는
+     *                                      [백엔드 성공유무 변수이름].data.success
+     *                                      [백엔드 성공유무 변수이름].data.message
+     *                                      [백엔드 성공유무 변수이름].data.message
+     *                                                                              와 같은 형태로 사용할 수 있다.
+     */
     @PostMapping
-    public ResponseEntity<Map<String, Object>> addProduct(@RequestBody Product product) {
+    public ResponseEntity<Map<String, Object>> addProduct(@RequestPart("product") Product product,
+                                                          @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
         log.info("POST /api/product - 상품 등록", product.getProductName());
         Map<String, Object> res = new HashMap<>();
 
         try{
-            productService.insertProduct(product);
+            productService.insertProduct(product, imageFile);
             res.put("success",true);
             res.put("message","상품이 성공적으로 등록되었습니다.");
             res.put("productId", product.getId());
@@ -212,55 +237,5 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
 
         }
-    }
-
-    // 아래 내용이 추가한것!
-    @PostMapping("/product-image")
-    public ResponseEntity<Map<String, Object>> uploadProductImage(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("productName")String productName, HttpSession session) {
-
-        Map<String, Object> res = new HashMap<>();
-
-        try {
-            Member loginUser = SessionUtil.getLoginUser(session);
-            String imageUrl = productService.updateProductImage(loginUser, productName, file, session);
-
-            res.put("success", true);
-            res.put("message", "제품 이미지가 업데이트 되었습니다.");
-            res.put("imageUrl", imageUrl);
-            log.info("제품 이미지 업로드 성공 - 제품명 : {}, 파일명 : {}", productName, file.getOriginalFilename() );
-            return ResponseEntity.ok(res); // 업데이트가 무사히 되면 200만 전달
-
-            // 개발자가 만든 exception 은 최 상위 작성
-            // 자바에서 기본으로 제공하는 exception 은
-            // 최 상위가 아닌 순부터 작성
-            // exception 의 부모인 exception 은 맨 마지막에 작성
-            // 부모 exception 은 까지 올 때는
-            // 어떤 문제인지 파악을 회사에서 못한 상태
-        } catch(IllegalStateException e) {
-            res.put("success", false);
-            res.put("message", e.getMessage());
-            return ResponseEntity.status(401).body(res);
-            // ResponseEntity 401
-
-        } catch(ForbiddenExceptions e) {
-            res.put("success", false);
-            res.put("message", e.getMessage());
-            return ResponseEntity.status(403).body(res);
-
-        } catch(IllegalArgumentException e) {
-            res.put("success", false);
-            res.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(res);
-
-        } catch(Exception e) {
-            log.error("프로필 이미지 업로드 실패 - 이메일 : {}, 오류 : {}", productName, e.getMessage());
-            res.put("success", false);
-            res.put("message", "서버 오류가 발생했습니다.");
-            return ResponseEntity.status(500).body(res);
-            // 500 error - 백엔드 에러
-        }
-
     }
 }
