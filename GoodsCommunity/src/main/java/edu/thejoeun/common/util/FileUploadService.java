@@ -55,6 +55,9 @@ public class FileUploadService {
     @Value("${file.product.upload.path}")
     private String productUploadPath;
 
+    @Value("${file.board.upload.path}")
+    private String boardUploadPath;
+
     /**
      * 프로필 이미지 업로드
      * @param file  업로드할 이미지 파일
@@ -167,6 +170,53 @@ public class FileUploadService {
         return "/product_images/" + productId + "/" + fileName;
     }
 
+    public String uploadBoardImage(MultipartFile file, int id, String imageType) throws IOException {
+
+        // 파일이 비어있는지 확인
+        if(file.isEmpty()) {
+            throw new IOException("업로드할 파일이 없습니다");
+        }
+
+        // 상품 별 폴더를 생성하기 위한 폴더 변수명칭 설정
+        //                  바탕화면/product_images  /  제품번호 로 폴더 생성
+        String boardFolder = boardUploadPath + "/" + id;
+
+        // 업로드 디렉토리 생성
+        File uploadDir = new File(boardFolder);
+        if(!uploadDir.exists()){
+            boolean created = uploadDir.mkdirs();
+            if(!created){
+                throw new IOException("업로드 디렉토리 생성에 실패했습니다." + boardFolder);
+            }
+            log.info("업로드 디렉토리 생성 : {}", boardFolder);
+        }
+
+        // 과제 2 : 원본 파일명 그대로 사용하고 앞에 imageType 만 붙이기
+        String 클라이언트가_업로드한_파일이름 = file.getOriginalFilename();
+        if(클라이언트가_업로드한_파일이름 == null || 클라이언트가_업로드한_파일이름.isEmpty()){
+            throw new IOException("파일 이름이 유효하지 않습니다.");
+        }
+
+        // 상품 가져오기
+        // main - 클라이언트가 업로드한 파일 이름으로 저장하는 방법
+        String fileName = imageType + "-" +클라이언트가_업로드한_파일이름; // 파일 확장자 기능은 따로 만들어서 사용
+        // main.확장자명으로 저장되는 방법
+        // String fileName = imageType + get확장자메서드(file); // 파일 확장자 기능은 따로 만들어서 사용
+
+        // DB 에서 저장할 상대 경로 반환
+        Path 저장될_파일_경로 = Paths.get(boardFolder,fileName);
+
+        // 파일 저장
+        try {
+            Files.copy(file.getInputStream(), 저장될_파일_경로, StandardCopyOption.REPLACE_EXISTING);
+            log.info("상품 이미지 업로드 성공 : {} -> {}", file.getOriginalFilename(), fileName);
+
+        } catch(Exception e) {
+            log.error("상품 이미지 저장 중 오류 발생 : ", e.getMessage());
+        }
+
+        return "/board_images/" + id + "/" + fileName;
+    }
 
     private String get확장자메서드(MultipartFile f) {
         // 원본 파일명과 확장자 추출 originFileName
@@ -185,10 +235,81 @@ public class FileUploadService {
     }
 
     // FileUploadService.java 에 deleteFile 이라는 메서드를 만들어 기존 이미지 파일 삭제
-    //    private String deleteFile(int productId,MultipartFile file) throws IOException {
-    //        if(file.isEmpty()) {
-    //            throw new IOException("삭제할 파일이 없습니다");
-    //        }
-    //
-    //    }
+    /**
+     * 파일 삭제
+     * @param DB_저장된_경로와_파일명칭 DB 에 저장된 파일의 폴더 경로
+     * @return 삭제 성공 여부
+     */
+    public boolean deleteFile(String DB_저장된_경로와_파일명칭) { // DB_저장된_경로와_파일명칭 = filePath
+        if(DB_저장된_경로와_파일명칭 != null && DB_저장된_경로와_파일명칭.isEmpty()){
+            log.warn("삭제할 파일 경로가 존재하지 않습니다.");
+            return false;
+        }
+
+        try {
+            // 1. DB 에 저장되어 있는 상대 경로를 절대 경로로 반환하여 처리
+            //    현재 나의 컴퓨터에서 어디에 파일이 존재하는지 위치를 완벽하게 확인하기 위한 작업으로
+            //    uploadPath 와 productUploadPath 는 C:/ D:/ E:/ / 부터 각 이미지 폴더까지 파일이름빼고 모든게 완벽하게 작성되어 있는 변수명으로
+            //    DB 에서 프로필에서 사용하는 이미지인가, 상품에서 사용하는 이미지인가 구분하기 위하여 넣어준
+            //    /profile_images/ 와 /product_images/ 를 제거하고, 본래의 저장된 상품의 명칭만 가져오겠다 작업하여
+            //    기존 완벽한 경로 + "/" 상품의 명칭으로 처리
+            String 절대_경로; // 절대 경로 = absolutePath
+
+            // 프로필 이미지인 경우
+            if(DB_저장된_경로와_파일명칭.startsWith("/profile_images/")){
+                String 프로필_이미지_파일경로 = DB_저장된_경로와_파일명칭.replace("/profile_images/", "");
+                절대_경로 = uploadPath + "/" + 프로필_이미지_파일경로;
+
+            } else if(DB_저장된_경로와_파일명칭.startsWith("/product_images/")) {
+                String 상품_이미지_파일경로 = DB_저장된_경로와_파일명칭.replace("/product_images/", "");
+                절대_경로 = productUploadPath + "/" + 상품_이미지_파일경로;
+                
+            } else {
+                // 기타 경로
+                log.warn("지원하지 않는 파일 경로 형식입니다. {}", DB_저장된_경로와_파일명칭);
+                return false;
+            }
+
+            // 위에서 만들어준 프로필 사진이나, 제품 메인 사진중에서 삭제하고자 하는 파일의 경로와 명칭은 절대경로 변수 내부에 데이터가 저장되어 있음
+            File file = new File(절대_경로);
+
+            // 절대경로 + 파일 이름이 존재하는지 확인
+            if(!file.exists()){
+                log.warn("삭제하려는 파일이 존재하지 않습니다 : {}", 절대_경로);
+                return false;
+            }
+
+            // 파일 삭제
+            // delete() 메서드의 경우 결과가 true false 로 나온다.
+            // 파일 삭제에 성공하면 true, 파일 삭제에 실패하면 false
+            boolean 파일제거하기 = file.delete();
+
+            if(파일제거하기) {
+                log.info("파일 삭제 성공 : {}", 절대_경로);
+
+                // 상품이 이미지인 경우, 폴더가 비어있으면 폴더도 삭제
+                if(DB_저장된_경로와_파일명칭.startsWith("/product_images/")){
+                    // 비어있는 상품 폴더 삭제하는 기능을 활용하여 삭제 (file.getParentFile())
+                    if(file.getParentFile().exists()) {
+                        deleteFile("/product_images/" + file.getParentFile().getName());
+                    }
+
+                }
+
+            } else {
+                log.error("파일 삭제 실패 : {}", 절대_경로);
+            }
+            return 파일제거하기;
+
+        } catch (Exception e) {
+            log.error("파일 삭제 중 오류 발생 : {}", e.getMessage());
+            return false;
+        }
+    }
+
+    // 폴더를 명령어나 서버에서 삭제할 때는 순서가 있다.
+    // 폴더 안에 파일이 존재하면 파일을 우선적으로 삭제한 다음에 폴더 삭제가 이루어짐
+    // 폴더 내부에 파일이 존재하면 폴더만 삭제한다는 개념이 아님
+    // 비어있는 상품 폴더 삭제
+    // 여러 파일 한 번에 삭제
 }

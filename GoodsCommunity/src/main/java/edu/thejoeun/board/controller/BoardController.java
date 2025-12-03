@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -56,8 +57,9 @@ public class BoardController {
     */
 
     @PostMapping // api endpoint = /api/board 맨 위에 작성한 RequestMapping 에 해당
-    public void createBoard(@RequestBody Board board) {
-        boardService.createBoard(board); // 게시글 저장
+    public void createBoard(@RequestPart("board") Board board,
+                            @RequestPart(value="imageFile", required = false) MultipartFile file) {
+        boardService.createBoard(board, file); // 게시글 저장
 
         // WebSocket 을 통해 실시간 알림 전송
         Map<String, Object> notification = new HashMap<>();

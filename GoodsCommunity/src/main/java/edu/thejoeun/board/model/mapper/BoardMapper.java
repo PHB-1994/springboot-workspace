@@ -23,13 +23,13 @@ public interface BoardMapper {
      * 작성한 게시물 저장
      * @param board 게시물 데이터 가져오기
      */
-    void insertBoard(Board board);
+    int insertBoard(Board board);
 
     /**
      * 게시물 데이터 제목, 내용, 저자 수정불가, 업데이트 일자 변경
      * @param board
      */
-    void updateBoard(Board board);
+    int updateBoard(Board board);
 
     /**
      * 게시물 상세보기 선택했을 경우

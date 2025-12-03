@@ -24,6 +24,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${file.product.upload.path}")
     private String productUploadPath;
 
+    @Value("${file.board.upload.path}")
+    private String boardUploadPath;
+
     @Bean
     public WebMvcConfigurer corsConfigurer() { // 특정 주소와 메서드만 스프링부트에 접근할 수 있게 설정
         return new WebMvcConfigurer() { // new WebMvcConfigurer 객체 사용 후 return 을 한 번에 작성하는 방식
@@ -56,11 +59,9 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/profile_images/**")
                 .addResourceLocations("file:"+fileUploadPath+"/"); // 폴더 명칭뒤에 바로 이미지명칭 붙어서 에러 발생
 
-        /*
-        게시물 이미지 폴더
-        registry.addResourceHandler("/profile_images/**")
-                .addResourceLocations("file:" + fileUploadPath + "/"); // 폴더 명칭뒤에 바로 이미지명칭 붙어서 에러 발생
-        */
+        //게시물 이미지 폴더
+        registry.addResourceHandler("/board_images/**")
+                .addResourceLocations("file:"+boardUploadPath+"/"); // 폴더 명칭뒤에 바로 이미지명칭 붙어서 에러 발생
         
         // 상품 이미지 : product_images/** 라는 변수이름으로 데이터 가져와서 활용하겠다는 요청이 들어오면
         // 실제 파일 시스템 경로에서 이미지를 가져와 사용

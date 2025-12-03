@@ -23,6 +23,13 @@ public class Board {
     private int viewCount;
     private String createdAt; // DB 명칭 created_at
     private String updatedAt; // DB 명칭 updated_at
+    private String boardImage;
+    /**
+     * 1. oracle DB 가서 alter 이용해서 boardImage 컬럼 varchar2로 추가
+     * 2. configProperties 가서 board-upload-image 경로 설정
+     * 3. webconfig 설정
+     * 4. fileUploadService 에서 게시물 이미지 올렸을 때 폴더 형태로 게시물 번호로 생성한 다음 내부에 파일 만들기
+     */
 
     // 인기글 전용 필드(일반 게시글 조회 시에는 null)
     // private int ranking;            // 인기글 순위
