@@ -184,4 +184,11 @@ public class FileUploadService {
         return "";
     }
 
+    // FileUploadService.java 에 deleteFile 이라는 메서드를 만들어 기존 이미지 파일 삭제
+    //    private String deleteFile(int productId,MultipartFile file) throws IOException {
+    //        if(file.isEmpty()) {
+    //            throw new IOException("삭제할 파일이 없습니다");
+    //        }
+    //
+    //    }
 }

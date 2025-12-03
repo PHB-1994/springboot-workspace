@@ -142,15 +142,25 @@ public class ProductController {
      * @param id      수정할 제품의 id 가져오기
      * @param product 수정할 제품의 대하여 작성된 내용 모두 가져오기
      * @return        수정된 결과 클라이언트 전달
+     * TODO :
+     *  @RequestBody -> @RequestPart 로 변경하여 product 와 이미지 데이터 가져오기
+     *  이미지는 필수로 가져오지 않아도 된다.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> upDateProduct(@PathVariable int id, @RequestBody Product product) {
+    public ResponseEntity<Map<String, Object>> upDateProduct(@PathVariable int id,
+                                                             // 데이터가 하나일 때는 기본값이 value
+                                                             @RequestPart("product") Product product,
+                                                             // 매개변수 데이터가 2가지 이상일 때는 각각 어떤 속성을 참조하는지 작성
+                                                             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
         log.info("Put /api/product/{} - 상품 수정",id);
+        log.info("받은 상품 정보 : {}",product);
+        log.info("이미지 파일 : {}",imageFile != null ? imageFile.getOriginalFilename() : "수정할 이미지 없음");
+
         Map<String, Object> res = new HashMap<>();
 
         try{
             product.setId(id);
-            productService.updateProduct(product);
+            productService.updateProduct(product, imageFile);
             res.put("success",true);
             res.put("message","상품이 성공적으로 수정되었습니다.");
             res.put("productId", product.getId());
