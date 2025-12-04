@@ -23,13 +23,13 @@ public interface BoardMapper {
      * 작성한 게시물 저장
      * @param board 게시물 데이터 가져오기
      */
-    int insertBoard(Board board);
+    void insertBoard(Board board);
 
     /**
      * 게시물 데이터 제목, 내용, 저자 수정불가, 업데이트 일자 변경
      * @param board
      */
-    int updateBoard(Board board);
+    void updateBoard(Board board);
 
     /**
      * 게시물 상세보기 선택했을 경우
@@ -37,4 +37,11 @@ public interface BoardMapper {
      * @param id
      */
     void updateViewCount(int id);
+
+    /**
+     * 게시물의 이미지 데이터 업데이트
+     * @param board id 와 mainImage, detailImage 활용할 것
+     *              int id, String board_main_image, String board_detail_image 와 같은 형식으로도 매개변수 작성 가능
+     */
+    void updateBoardImages(Board board);
 }

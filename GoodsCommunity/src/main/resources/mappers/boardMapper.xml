@@ -36,9 +36,10 @@
         VALUES(#{title}, #{content}, #{writer}, #{boardMainImage}, #{boardDetailImage})
     </insert>
 
-    <update id="updateBoard" parameterType="Board">
+    <update id="updateBoardImages" parameterType="Board">
         UPDATE board
-        SET board_main_image = #{boardMainImage}
+        SET board_main_image = #{boardMainImage},
+            board_detail_image = #{boardDetailImage}
         WHERE id = #{id}
     </update>
 

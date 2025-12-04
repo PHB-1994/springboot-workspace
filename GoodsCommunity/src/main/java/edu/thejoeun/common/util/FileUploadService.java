@@ -262,7 +262,11 @@ public class FileUploadService {
                 String 상품_이미지_파일경로 = DB_저장된_경로와_파일명칭.replace("/product_images/", "");
                 절대_경로 = productUploadPath + "/" + 상품_이미지_파일경로;
                 
-            } else {
+            } else if(DB_저장된_경로와_파일명칭.startsWith("/board_images/")) {
+                String 게시물_이미지_파일경로 = DB_저장된_경로와_파일명칭.replace("/board_images/", "");
+                절대_경로 = boardUploadPath + "/" + 게시물_이미지_파일경로;
+
+            }  else {
                 // 기타 경로
                 log.warn("지원하지 않는 파일 경로 형식입니다. {}", DB_저장된_경로와_파일명칭);
                 return false;

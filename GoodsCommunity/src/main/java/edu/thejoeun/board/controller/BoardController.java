@@ -9,6 +9,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,6 @@ public class BoardController {
     // serviceImpl 에서 재 사용된 기능을 활용할 수 있다.
     private final BoardService boardService;
     private final SchedulingService schedulingService;
-    private final SimpMessagingTemplate messagingTemplate; // WebSocket 메세지 전송
 
     // 전체 게시물 조회
     @GetMapping("/all")
@@ -56,24 +56,26 @@ public class BoardController {
     }
     */
 
+    /**
+     * 게시물 작성 (이미지 포함될 수도 있고, 안 될 수도 있음)
+     * @param board         게시물 정보
+     * @param mainImage     메인 이미지 (선택사항 - 클라이언트가 null 로 전달할 때는 이미지 없음)
+     * @param detailImage   상세 이미지 리스트 (최대 5개, 선택사항 - 클라이언트가 null 로 전달할 때는 이미지 없음)
+     * @throws IOException
+     */
     @PostMapping // api endpoint = /api/board 맨 위에 작성한 RequestMapping 에 해당
     public void createBoard(@RequestPart Board board,
-                            @RequestPart(required = false) MultipartFile main_image,
-                            @RequestPart(required = false) MultipartFile detail_image) {
-        boardService.createBoard(board, main_image); // 게시글 저장
+                            @RequestPart(required = false) MultipartFile mainImage,
+                            @RequestPart(required = false) List<MultipartFile> detailImage) throws IOException {
+        log.info("게시물 작성 요청 - 제목 : {}, 작성자 : {}", board.getTitle(), board.getWriter());
 
-        // WebSocket 을 통해 실시간 알림 전송
-        Map<String, Object> notification = new HashMap<>();
-        notification.put("msg", "새로운 게시글이 작성되었습니다.");
-        notification.put("boardId", board.getId());
-        log.info("boardId : {}", board.getId());
-        notification.put("title", board.getTitle());
-        notification.put("writer", board.getWriter());
-        notification.put("timestamp", System.currentTimeMillis());
+        if(detailImage != null) {
+            log.info("상세 이미지 개수 : {}", detailImage.size());
+        }
 
-        // /topic/notifications 을 구독한 모든 클라이언트에게 전송
-        messagingTemplate.convertAndSend("/topic/notifications", notification);
-        log.info("새 게시글 작성 및 WebSocket 알림 전송 완료 : {}", board.getTitle()); // 개발자 회사 로그용
+        boardService.createBoard(board, mainImage, detailImage); // 게시글 저장
+
+        log.info("게시물 작성 완료 - ID : {}", board.getId());
     }
 
 }

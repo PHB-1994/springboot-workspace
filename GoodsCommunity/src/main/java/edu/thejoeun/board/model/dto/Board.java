@@ -24,17 +24,18 @@ public class Board {
     private String createdAt; // DB 명칭 created_at
     private String updatedAt; // DB 명칭 updated_at
     private String boardMainImage;
+    // DB 에 저장할 때는 List -> 문자열 형태로 저장. , 로 구분지어서 하나의 문자열로 저장할 예정
     private String boardDetailImage;
+
+    // 인기글 전용 필드(일반 게시글 조회 시에는 null)
+    private Integer ranking;           // 인기글 순위
+    private String popularUpdateAt;    // 인기글 업데이트 시간
 
     /**
      * 1. oracle DB 가서 alter 이용해서 boardImage 컬럼 varchar2로 추가
      * 2. configProperties 가서 board-upload-image 경로 설정
      * 3. webconfig 설정
      * 4. fileUploadService 에서 게시물 이미지 올렸을 때 폴더 형태로 게시물 번호로 생성한 다음 내부에 파일 만들기
+     * 5. 게시물 작성 시 폴더에 이미지 저장되고, DB 에 경로 + 파일명 추가되는지 확인
      */
-
-    // 인기글 전용 필드(일반 게시글 조회 시에는 null)
-    // private int ranking;            // 인기글 순위
-    private Integer ranking;           // 인기글 순위
-    private String popularUpdateAt;    // 인기글 업데이트 시간
 }

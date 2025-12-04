@@ -61,7 +61,7 @@ public class WebConfig implements WebMvcConfigurer {
 
         //게시물 이미지 폴더
         registry.addResourceHandler("/board_images/**")
-                .addResourceLocations("file:"+boardUploadPath+"/"); // 폴더 명칭뒤에 바로 이미지명칭 붙어서 에러 발생
+                .addResourceLocations("file:"+boardUploadPath+"/");
         
         // 상품 이미지 : product_images/** 라는 변수이름으로 데이터 가져와서 활용하겠다는 요청이 들어오면
         // 실제 파일 시스템 경로에서 이미지를 가져와 사용
@@ -79,7 +79,7 @@ public class WebConfig implements WebMvcConfigurer {
          * 프로필/상품 이미지 경로가 각각 독립적으로 설정되있는지 필히 확인
          */
         registry.addResourceHandler("/product_images/**")
-                .addResourceLocations("file:"+productUploadPath+"/"); // 폴더 명칭뒤에 바로 이미지명칭 붙어서 에러 발생
+                .addResourceLocations("file:"+productUploadPath+"/");
 
     }
 }
