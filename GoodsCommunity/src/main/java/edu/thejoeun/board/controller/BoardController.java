@@ -66,7 +66,8 @@ public class BoardController {
     @PostMapping // api endpoint = /api/board 맨 위에 작성한 RequestMapping 에 해당
     public void createBoard(@RequestPart Board board,
                             @RequestPart(required = false) MultipartFile mainImage,
-                            @RequestPart(required = false) List<MultipartFile> detailImage) throws IOException {
+                            @RequestPart(required = false) List<MultipartFile> detailImage
+    ) throws IOException {
         log.info("게시물 작성 요청 - 제목 : {}, 작성자 : {}", board.getTitle(), board.getWriter());
 
         if(detailImage != null) {

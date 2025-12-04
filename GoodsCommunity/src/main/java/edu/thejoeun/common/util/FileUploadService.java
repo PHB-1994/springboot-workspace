@@ -200,7 +200,7 @@ public class FileUploadService {
             throw new IOException("파일 이름이 유효하지 않습니다.");
         }
 
-        String fileName = 클라이언트가_업로드한_파일이름;
+        String fileName = imageType + 클라이언트가_업로드한_파일이름;
 
         Path 저장될_파일_경로 = Paths.get(boardFolder,fileName);
 
