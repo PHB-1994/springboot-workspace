@@ -23,7 +23,9 @@ public class Board {
     private int viewCount;
     private String createdAt; // DB 명칭 created_at
     private String updatedAt; // DB 명칭 updated_at
-    private String boardImage;
+    private String boardMainImage;
+    private String boardDetailImage;
+
     /**
      * 1. oracle DB 가서 alter 이용해서 boardImage 컬럼 varchar2로 추가
      * 2. configProperties 가서 board-upload-image 경로 설정

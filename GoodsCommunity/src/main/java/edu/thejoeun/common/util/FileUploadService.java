@@ -112,7 +112,6 @@ public class FileUploadService {
         return "/profile_images/" + 하나_밖에_없는_파일이름;
     }
 
-
     /**
      * 상품 이미지 메인 이미지 업로드
      * @param file         업로드 할 상품 이미지 파일
@@ -170,52 +169,51 @@ public class FileUploadService {
         return "/product_images/" + productId + "/" + fileName;
     }
 
-    public String uploadBoardImage(MultipartFile file, int id, String imageType) throws IOException {
+    /**
+     * 게시물 이미지 업로드
+     * @param file 업로드할 게시물 이미지 파일
+     * @param boardId 게시물 아이디
+     * @param imageType main 또는 detail 이미지
+     * @return 저장된 파일의 경로 (DBㅇ ㅔ저장할 상대 경로)
+     * @throws IOException 파일 처리 중 오류 발생 시 예외 처리
+     */
+    public String uploadBoardImage(MultipartFile file, int boardId, String imageType) throws IOException {
 
         // 파일이 비어있는지 확인
-        if(file.isEmpty()) {
-            throw new IOException("업로드할 파일이 없습니다");
-        }
+        if(file == null || file.isEmpty()) throw new IOException("업로드할 파일이 없습니다");
 
-        // 상품 별 폴더를 생성하기 위한 폴더 변수명칭 설정
-        //                  바탕화면/product_images  /  제품번호 로 폴더 생성
-        String boardFolder = boardUploadPath + "/" + id;
+        // 게시물 별 폴더 생성 : /board_images/1001 게시물 번호별 폴더 생성
+        String boardFolder = boardUploadPath + "/" + boardId;
 
-        // 업로드 디렉토리 생성
         File uploadDir = new File(boardFolder);
+
         if(!uploadDir.exists()){
             boolean created = uploadDir.mkdirs();
             if(!created){
-                throw new IOException("업로드 디렉토리 생성에 실패했습니다." + boardFolder);
+                throw new IOException("게시물 이미지 디렉토리 생성을 실패했습니다." + boardFolder);
             }
-            log.info("업로드 디렉토리 생성 : {}", boardFolder);
+            log.info("게시물 이미지 디렉토리 생성 : {}", boardFolder);
         }
 
-        // 과제 2 : 원본 파일명 그대로 사용하고 앞에 imageType 만 붙이기
         String 클라이언트가_업로드한_파일이름 = file.getOriginalFilename();
         if(클라이언트가_업로드한_파일이름 == null || 클라이언트가_업로드한_파일이름.isEmpty()){
             throw new IOException("파일 이름이 유효하지 않습니다.");
         }
 
-        // 상품 가져오기
-        // main - 클라이언트가 업로드한 파일 이름으로 저장하는 방법
-        String fileName = imageType + "-" +클라이언트가_업로드한_파일이름; // 파일 확장자 기능은 따로 만들어서 사용
-        // main.확장자명으로 저장되는 방법
-        // String fileName = imageType + get확장자메서드(file); // 파일 확장자 기능은 따로 만들어서 사용
+        String fileName = 클라이언트가_업로드한_파일이름;
 
-        // DB 에서 저장할 상대 경로 반환
         Path 저장될_파일_경로 = Paths.get(boardFolder,fileName);
 
-        // 파일 저장
         try {
             Files.copy(file.getInputStream(), 저장될_파일_경로, StandardCopyOption.REPLACE_EXISTING);
-            log.info("상품 이미지 업로드 성공 : {} -> {}", file.getOriginalFilename(), fileName);
+            log.info("게시물 이미지 업로드 성공 : {} -> {}", file.getOriginalFilename(), fileName);
 
         } catch(Exception e) {
-            log.error("상품 이미지 저장 중 오류 발생 : ", e.getMessage());
+            log.error("게시물 이미지 저장 중 오류 발생 : ", e.getMessage());
+            throw new IOException("게시물 이미지 저장에 실패했습니다." + e.getMessage());
         }
 
-        return "/board_images/" + id + "/" + fileName;
+        return "/board_images/" + boardId + "/" + fileName;
     }
 
     private String get확장자메서드(MultipartFile f) {

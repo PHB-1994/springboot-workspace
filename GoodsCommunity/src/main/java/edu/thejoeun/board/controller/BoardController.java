@@ -57,9 +57,10 @@ public class BoardController {
     */
 
     @PostMapping // api endpoint = /api/board 맨 위에 작성한 RequestMapping 에 해당
-    public void createBoard(@RequestPart("board") Board board,
-                            @RequestPart(value="imageFile", required = false) MultipartFile file) {
-        boardService.createBoard(board, file); // 게시글 저장
+    public void createBoard(@RequestPart Board board,
+                            @RequestPart(required = false) MultipartFile main_image,
+                            @RequestPart(required = false) MultipartFile detail_image) {
+        boardService.createBoard(board, main_image); // 게시글 저장
 
         // WebSocket 을 통해 실시간 알림 전송
         Map<String, Object> notification = new HashMap<>();

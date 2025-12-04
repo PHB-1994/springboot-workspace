@@ -42,6 +42,9 @@ public class BoardServiceImpl implements BoardService {
         return b != null ? b : null;
     }
 
+    /*
+    TODO: 게시물 메인 이미지, 게시물 상세 이미지 전달받는 매개변수 두가지 추가
+     */
     @Transactional
     @Override
     public void createBoard(Board board, MultipartFile file) {
@@ -54,7 +57,7 @@ public class BoardServiceImpl implements BoardService {
                 if(result > 0 ){
                     String imageUrl = fileUploadService.uploadBoardImage(file, board.getId(), "main");
 
-                    board.setBoardImage(imageUrl);
+                    board.setBoardMainImage(imageUrl);
                     boardMapper.updateBoard(board);
 
                     log.info("게시물 등록 완료 - ID : {}, Title : {}",
